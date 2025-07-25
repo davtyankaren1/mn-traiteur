@@ -238,17 +238,9 @@ export default function Cart({ isOpen, onClose }) {
                 style={{ transitionDelay: isAnimating ? "250ms" : "0ms" }}
               >
                 <div className='space-y-2'>
-                  <div className='flex justify-between text-sm'>
+                  <div className='flex justify-between font-semibold text-lg border-t pt-2'>
                     <span style={{ fontFamily: "Arial" }}>Sous-total</span>
                     <span>{getTotalPrice()}€</span>
-                  </div>
-                  <div className='flex justify-between text-sm'>
-                    <span style={{ fontFamily: "Arial" }}>Livraison</span>
-                    <span>{deliveryFee}€</span>
-                  </div>
-                  <div className='flex justify-between font-semibold text-lg border-t pt-2'>
-                    <span style={{ fontFamily: "Arial" }}>Total</span>
-                    <span className='text-red-600'>{totalWithDelivery}€</span>
                   </div>
                 </div>
                 <Button

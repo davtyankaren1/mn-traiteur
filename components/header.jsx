@@ -215,7 +215,7 @@ export default function Header({ onCartClick }) {
                 variant='ghost'
                 size='icon'
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className='lg:hidden hover:bg-[#DC2626]/10 transition-all duration-300 p-2 sm:p-3 bg-red-600/20 text-red-600 hover:bg-red-600/30 hover:text-red-600 border border-red-600/30 flex items-center justify-center'
+                className='lg:hidden hover:bg-[#DC2626]/10 transition-all duration-300 p-2 sm:p-3 bg-red-600/20  hover:bg-red-600/30 hover:text-red-600 border  flex items-center justify-center'
               >
                 <div className='relative w-6 h-6 flex items-center justify-center'>
                   <span

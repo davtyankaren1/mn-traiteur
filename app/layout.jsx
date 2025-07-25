@@ -9,8 +9,7 @@ export const metadata = {
   description:
     "Cuisine française traditionnelle et moderne préparée avec des ingrédients naturels et beaucoup d'amour",
   viewport:
-    "width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes",
-  generator: "v0.dev"
+    "width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes"
 };
 
 export default function RootLayout({ children }) {
