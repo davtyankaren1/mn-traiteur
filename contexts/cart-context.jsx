@@ -1,11 +1,50 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 const CartContext = createContext(undefined);
 
+const CART_STORAGE_KEY = "restaurant-cart";
+
+const saveCartToLocalStorage = (cartItems) => {
+  try {
+    if (typeof window !== "undefined") {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
+    }
+  } catch (error) {
+    console.error("Error saving cart to localStorage:", error);
+  }
+};
+
+const loadCartFromLocalStorage = () => {
+  try {
+    if (typeof window !== "undefined") {
+      const savedCart = localStorage.getItem(CART_STORAGE_KEY);
+      return savedCart ? JSON.parse(savedCart) : [];
+    }
+  } catch (error) {
+    console.error("Error loading cart from localStorage:", error);
+  }
+  return [];
+};
+
 export function CartProvider({ children }) {
   const [items, setItems] = useState([]);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // Load cart from localStorage on component mount
+  useEffect(() => {
+    const savedItems = loadCartFromLocalStorage();
+    setItems(savedItems);
+    setIsLoaded(true);
+  }, []);
+
+  // Save to localStorage whenever items change (but only after initial load)
+  useEffect(() => {
+    if (isLoaded) {
+      saveCartToLocalStorage(items);
+    }
+  }, [items, isLoaded]);
 
   const addItem = (newItem) => {
     setItems((prev) => {
@@ -33,10 +72,12 @@ export function CartProvider({ children }) {
     setItems((prev) => prev.filter((i) => i.id !== id));
   };
 
-  const clearCart = () => setItems([]);
+  const clearCart = () => {
+    setItems([]);
+  };
 
   const getTotalPrice = () =>
-    items.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2); // Ensures the price is rounded to two decimal places
+    items.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2);
 
   return (
     <CartContext.Provider
@@ -46,7 +87,8 @@ export function CartProvider({ children }) {
         updateQuantity,
         removeItem,
         clearCart,
-        getTotalPrice
+        getTotalPrice,
+        isLoaded
       }}
     >
       {children}

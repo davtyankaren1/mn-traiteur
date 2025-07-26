@@ -7,6 +7,31 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useCart } from "@/contexts/cart-context";
 import DeliveryModal from "@/components/delivery-modal";
 
+// localStorage utility functions
+const CART_STORAGE_KEY = "restaurant-cart";
+
+const saveCartToLocalStorage = (cartItems) => {
+  try {
+    if (typeof window !== "undefined") {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
+    }
+  } catch (error) {
+    console.error("Error saving cart to localStorage:", error);
+  }
+};
+
+const loadCartFromLocalStorage = () => {
+  try {
+    if (typeof window !== "undefined") {
+      const savedCart = localStorage.getItem(CART_STORAGE_KEY);
+      return savedCart ? JSON.parse(savedCart) : [];
+    }
+  } catch (error) {
+    console.error("Error loading cart from localStorage:", error);
+  }
+  return [];
+};
+
 export default function Cart({ isOpen, onClose }) {
   const { items, updateQuantity, removeItem, getTotalPrice } = useCart();
   const [isDeliveryOpen, setIsDeliveryOpen] = useState(false);
@@ -25,12 +50,10 @@ export default function Cart({ isOpen, onClose }) {
       document.body.style.overflow = "hidden";
       document.body.style.overflowX = "hidden";
       document.documentElement.style.overflowX = "hidden";
-
       // Trigger animation after a brief delay to ensure initial render
       const openTimer = setTimeout(() => {
         setIsAnimating(true);
       }, 10);
-
       return () => clearTimeout(openTimer);
     } else {
       // Start closing animation
@@ -39,12 +62,10 @@ export default function Cart({ isOpen, onClose }) {
       document.body.style.overflow = "unset";
       document.body.style.overflowX = "unset";
       document.documentElement.style.overflowX = "unset";
-
       // Stop rendering after animation completes (faster)
       const closeTimer = setTimeout(() => {
         setShouldRender(false);
       }, 300);
-
       return () => clearTimeout(closeTimer);
     }
   }, [isOpen]);
@@ -60,6 +81,28 @@ export default function Cart({ isOpen, onClose }) {
 
   const handleCheckout = () => {
     setIsDeliveryOpen(true);
+  };
+
+  // Handle quantity update with localStorage
+  const handleUpdateQuantity = (itemId, newQuantity) => {
+    if (newQuantity <= 0) {
+      handleRemoveItem(itemId);
+    } else {
+      updateQuantity(itemId, newQuantity);
+      // Update localStorage after updating quantity
+      const updatedItems = items.map((item) =>
+        item.id === itemId ? { ...item, quantity: newQuantity } : item
+      );
+      saveCartToLocalStorage(updatedItems);
+    }
+  };
+
+  // Handle item removal with localStorage
+  const handleRemoveItem = (itemId) => {
+    removeItem(itemId);
+    // Update localStorage after removing item
+    const updatedItems = items.filter((item) => item.id !== itemId);
+    saveCartToLocalStorage(updatedItems);
   };
 
   if (!shouldRender) return null;
@@ -182,9 +225,12 @@ export default function Cart({ isOpen, onClose }) {
                                 size='sm'
                                 onClick={() => {
                                   if (item.quantity === 1) {
-                                    removeItem(item.id);
+                                    handleRemoveItem(item.id);
                                   } else {
-                                    updateQuantity(item.id, item.quantity - 1);
+                                    handleUpdateQuantity(
+                                      item.id,
+                                      item.quantity - 1
+                                    );
                                   }
                                 }}
                                 className='h-8 w-8 p-0 border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-200 hover:scale-110'
@@ -198,7 +244,10 @@ export default function Cart({ isOpen, onClose }) {
                                 variant='outline'
                                 size='sm'
                                 onClick={() =>
-                                  updateQuantity(item.id, item.quantity + 1)
+                                  handleUpdateQuantity(
+                                    item.id,
+                                    item.quantity + 1
+                                  )
                                 }
                                 className='h-8 w-8 p-0 border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-200 hover:scale-110'
                               >
@@ -213,7 +262,7 @@ export default function Cart({ isOpen, onClose }) {
                             <Button
                               variant='ghost'
                               size='sm'
-                              onClick={() => removeItem(item.id)}
+                              onClick={() => handleRemoveItem(item.id)}
                               className='text-red-600 hover:text-red-700 hover:bg-red-600/10 mt-1 transition-all duration-200 hover:scale-105'
                             >
                               Supprimer
