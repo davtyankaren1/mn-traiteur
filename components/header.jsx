@@ -303,19 +303,12 @@ export default function Header({ onCartClick }) {
 
             {/* Contact Actions - Phone Number and Social Media in Flex */}
             <div
-              className='p-4 space-y-4 social-buttons'
+              className='p-4 space-y-4 social-buttons '
               style={{ animationDelay: "0.8s" }}
             >
               {/* Phone Number and Social Media Icons in Flex Layout */}
-              <div className='flex items-center justify-center space-x-2'>
+              <div className='flex items-center justify-center space-x-2 '>
                 {/* Phone Number - Light Background */}
-                <a
-                  href='tel:+33123456789'
-                  className='flex items-center justify-center px-4 py-3 bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 rounded-xl font-semibold text-base transition-all duration-300 hover:scale-105 border border-red-200'
-                >
-                  <Phone className='h-4 w-4 mr-2' />
-                  +33 1 23 45 67 89
-                </a>
 
                 {/* Social Media Icons */}
                 <a
@@ -339,8 +332,16 @@ export default function Header({ onCartClick }) {
               </div>
 
               {/* Footer Text - Red Text */}
-              <div className='text-center text-red-600/70 text-sm pt-4'>
-                <p style={{ fontFamily: "Arial" }}>© 2024 M.N. Traiteur</p>
+              <div className='text-center '>
+                <p style={{ fontFamily: "Arial" }}>
+                  <a
+                    href='tel:+33123456789'
+                    className='mb-2 flex items-center justify-center  bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 rounded-xl font-semibold text-base transition-all duration-300  border border-red-200'
+                  >
+                    <Phone className='h-4 w-4 mr-2' />
+                    +33 6 12 53 43 76
+                  </a>
+                </p>
                 <p style={{ fontFamily: "Arial" }}>
                   Cuisine française de qualité
                 </p>

@@ -36,7 +36,7 @@ export function CartProvider({ children }) {
   const clearCart = () => setItems([]);
 
   const getTotalPrice = () =>
-    items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    items.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2); // Ensures the price is rounded to two decimal places
 
   return (
     <CartContext.Provider

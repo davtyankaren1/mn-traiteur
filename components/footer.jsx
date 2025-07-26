@@ -96,14 +96,13 @@ export default function Footer() {
               <li className='flex items-start space-x-3'>
                 <MapPin className='h-5 w-5 text-red-600 mt-0.5 flex-shrink-0' />
                 <span className='text-gray-300' style={{ fontFamily: "Arial" }}>
-                  Paris, Rue de la Paix 12, France
+                  19 rue Forlen 67118 Geispolsheim, France
                 </span>
               </li>
               <li className='flex items-center space-x-3'>
                 <Phone className='h-5 w-5 text-red-600 flex-shrink-0' />
                 <div className='text-gray-300'>
-                  <div>+33 1 23 45 67 89</div>
-                  <div>+33 6 12 34 56 78</div>
+                  <div>+33 6 12 53 43 76</div>
                 </div>
               </li>
               <li className='flex items-center space-x-3'>
@@ -123,12 +122,12 @@ export default function Footer() {
             </h3>
             <div className='space-y-2 text-gray-300'>
               <div className='flex justify-between'>
-                <span style={{ fontFamily: "Arial" }}>Lundi - Jeudi</span>
+                <span style={{ fontFamily: "Arial" }}>Monday - Fermé</span>
                 <span>10:00 - 23:00</span>
               </div>
               <div className='flex justify-between'>
-                <span style={{ fontFamily: "Arial" }}>Vendredi - Dimanche</span>
-                <span>10:00 - 24:00</span>
+                <span style={{ fontFamily: "Arial" }}>Tuesday-Sunday</span>
+                <span>11h30 - 14h30 et 18h - 21h45</span>
               </div>
             </div>
             <div className='mt-4 p-3 bg-red-600/20 rounded-lg'>

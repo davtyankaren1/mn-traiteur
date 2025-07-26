@@ -37,26 +37,6 @@ const supabaseAnonKey =
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-// localStorage functions - ADDED
-const saveCartToLocalStorage = (cartItems) => {
-  try {
-    localStorage.setItem("restaurant-cart", JSON.stringify(cartItems));
-    console.log("Cart saved to localStorage:", cartItems);
-  } catch (error) {
-    console.error("Error saving to localStorage:", error);
-  }
-};
-
-const getCartFromLocalStorage = () => {
-  try {
-    const saved = localStorage.getItem("restaurant-cart");
-    return saved ? JSON.parse(saved) : [];
-  } catch (error) {
-    console.error("Error loading from localStorage:", error);
-    return [];
-  }
-};
-
 export default function Menu() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -68,7 +48,7 @@ export default function Menu() {
   // State for Supabase data
   const [menuItems, setMenuItems] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [categoriesMap, setCategoriesMap] = useState({}); // Map category_id to category name
+  const [categoriesMap, setCategoriesMap] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -77,20 +57,18 @@ export default function Menu() {
       try {
         setLoading(true);
         console.log("Fetching menu data from Supabase...");
-        // Fetch products and categories in parallel
+
         const [productsResponse, categoriesResponse] = await Promise.all([
           supabase.from("products").select("*").order("name"),
           supabase.from("categories").select("*").order("name")
         ]);
 
-        // Handle categories first
         if (categoriesResponse.error) {
           console.error("Categories error:", categoriesResponse.error);
           setError(`Categories: ${categoriesResponse.error.message}`);
           return;
         }
 
-        // Handle products
         if (productsResponse.error) {
           console.error("Products error:", productsResponse.error);
           setError(`Products: ${productsResponse.error.message}`);
@@ -100,7 +78,6 @@ export default function Menu() {
         console.log("Products from Supabase:", productsResponse.data);
         console.log("Categories from Supabase:", categoriesResponse.data);
 
-        // Create categories map for quick lookup
         const catMap = {};
         const categoryNames = ["Tout"];
         if (categoriesResponse.data) {
@@ -110,7 +87,6 @@ export default function Menu() {
           });
         }
 
-        // Set the data
         setMenuItems(productsResponse.data || []);
         setCategories(categoryNames);
         setCategoriesMap(catMap);
@@ -125,33 +101,15 @@ export default function Menu() {
     fetchMenuData();
   }, []);
 
-  // Load cart from localStorage on component mount - ADDED
-  useEffect(() => {
-    const savedCart = getCartFromLocalStorage();
-    if (savedCart && savedCart.length > 0) {
-      console.log("Loading cart from localStorage:", savedCart);
-      savedCart.forEach((savedItem) => {
-        // Check if item already exists in current cart to avoid duplicates
-        const existingItem = items.find((item) => item.id === savedItem.id);
-        if (!existingItem) {
-          addItem(savedItem);
-        }
-      });
-    }
-  }, [addItem, items]);
-
-  // Helper function to get category name by ID
   const getCategoryName = (categoryId) => {
     return categoriesMap[categoryId] || "Catégorie inconnue";
   };
 
-  // Filter menuItems based on activeCategory and limit items shown
   const filteredItems = useMemo(() => {
     let filtered;
     if (activeCategory === "Tout") {
       filtered = menuItems;
     } else {
-      // Filter by matching category_id to category name
       filtered = menuItems.filter((item) => {
         const categoryName = getCategoryName(item.category_id);
         return categoryName === activeCategory;
@@ -160,7 +118,6 @@ export default function Menu() {
     return filtered.slice(0, itemsToShow);
   }, [menuItems, activeCategory, itemsToShow, categoriesMap]);
 
-  // Get total count for current category
   const totalItemsInCategory = useMemo(() => {
     if (activeCategory === "Tout") {
       return menuItems.length;
@@ -189,7 +146,6 @@ export default function Menu() {
         }
       }
     } else if (currentQuantity === 0) {
-      // Add new item
       const item = menuItems.find((item) => item.id === productId);
       if (item) {
         addItem({
@@ -202,14 +158,8 @@ export default function Menu() {
         toast.success(`${item.name} ajouté au panier`);
       }
     } else {
-      // Update existing item
       updateQuantity(productId, newQuantity);
     }
-
-    // Save updated cart to localStorage after a short delay to ensure state is updated - ADDED
-    setTimeout(() => {
-      saveCartToLocalStorage(items);
-    }, 100);
   };
 
   const handleQuickView = (product) => {
@@ -236,7 +186,6 @@ export default function Menu() {
         }
       `}</style>
       <div className='container px-4 md:px-6 max-w-7xl mx-auto'>
-        {/* Header */}
         <div className='text-center mb-16'>
           <div className='inline-block mb-3'>
             <div className='flex items-center justify-center gap-2'>
@@ -259,7 +208,6 @@ export default function Menu() {
           </p>
         </div>
 
-        {/* Loading State */}
         {loading && (
           <div className='flex flex-col items-center justify-center py-12'>
             <Loader2 className='h-12 w-12 text-red-600 animate-spin mb-4' />
@@ -272,7 +220,6 @@ export default function Menu() {
           </div>
         )}
 
-        {/* Error State */}
         {error && (
           <div className='flex flex-col items-center justify-center py-12 text-center'>
             <div className='bg-red-100 text-red-700 p-6 rounded-lg max-w-md border border-red-200'>
@@ -292,10 +239,8 @@ export default function Menu() {
           </div>
         )}
 
-        {/* Menu Content - Only show when not loading and no error */}
         {!loading && !error && (
           <>
-            {/* Filter Tags */}
             <div className='flex flex-wrap justify-center gap-1 sm:gap-2 mb-8 sm:mb-12'>
               {categories.map((category) => (
                 <Button
@@ -318,7 +263,6 @@ export default function Menu() {
               ))}
             </div>
 
-            {/* No Items State */}
             {filteredItems.length === 0 && (
               <div className='text-center py-12'>
                 <p
@@ -330,7 +274,6 @@ export default function Menu() {
               </div>
             )}
 
-            {/* Menu Grid */}
             <div className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6'>
               {filteredItems.map((product, index) => {
                 const quantity = getItemQuantityInCart(product.id);
@@ -344,20 +287,16 @@ export default function Menu() {
                       animationFillMode: "both"
                     }}
                   >
-                    {/* 3/2 aspect ratio image container */}
                     <div className='relative w-full aspect-[3/2] bg-gray-100 overflow-hidden'>
                       <Image
                         src={
                           product.image_url ||
-                          "/placeholder.svg?height=200&width=300" ||
-                          "/placeholder.svg" ||
-                          "/placeholder.svg"
+                          "/placeholder.svg?height=200&width=300"
                         }
                         alt={product.name}
                         fill
                         className='object-cover transition-transform duration-300 hover:scale-105'
                       />
-                      {/* Price overlay - bottom right corner */}
                       <div className='absolute bottom-2 right-2 bg-red-600 text-white px-2 py-1 rounded-lg shadow-lg'>
                         <p
                           className='text-sm font-bold'
@@ -368,7 +307,6 @@ export default function Menu() {
                             : "Prix sur demande"}
                         </p>
                       </div>
-                      {/* Category badge - top left corner */}
                       <div className='absolute top-2 left-2 bg-black/70 text-white px-2 py-1 rounded-lg text-xs'>
                         {categoryName}
                       </div>
@@ -465,9 +403,7 @@ export default function Menu() {
                                 <Image
                                   src={
                                     selectedProduct.image_url ||
-                                    "/placeholder.svg?height=300&width=300" ||
-                                    "/placeholder.svg" ||
-                                    "/placeholder.svg"
+                                    "/placeholder.svg?height=300&width=300"
                                   }
                                   alt={selectedProduct.name}
                                   fill
@@ -498,7 +434,6 @@ export default function Menu() {
                                     </div>
                                   )}
                                 </div>
-                                {/* Add to cart button in modal */}
                                 {quantity === 0 ? (
                                   <Button
                                     className='w-full mt-4 sm:mt-6 bg-red-600 hover:bg-red-700 text-white'
@@ -560,7 +495,6 @@ export default function Menu() {
               })}
             </div>
 
-            {/* Show More Button */}
             {itemsToShow < totalItemsInCategory && (
               <div className='flex justify-center mt-8'>
                 <Button

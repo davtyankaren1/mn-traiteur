@@ -208,7 +208,7 @@ export default function Cart({ isOpen, onClose }) {
                           </div>
                           <div className='text-right'>
                             <p className='font-semibold text-gray-900'>
-                              {item.price * item.quantity}€
+                              {(item.price * item.quantity).toFixed(2)}€
                             </p>
                             <Button
                               variant='ghost'
@@ -245,7 +245,7 @@ export default function Cart({ isOpen, onClose }) {
                 </div>
                 <Button
                   onClick={handleCheckout}
-                  className='w-full bg-red-600 hover:bg-red-700 text-white py-3 text-lg font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-lg'
+                  className='w-full bg-red-600 hover:bg-red-700 text-white py-3 text-lg font-semibold transition-all duration-300 transform  hover:shadow-lg'
                   style={{ fontFamily: "Arial" }}
                 >
                   Commander

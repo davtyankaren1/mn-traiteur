@@ -207,7 +207,7 @@ export default function Contact() {
                       Adresse
                     </h4>
                     <p className='text-gray-600 text-sm'>
-                      Paris, Rue de la Paix 12
+                      19 rue Forlen 67118 Geispolsheim
                     </p>
                   </div>
                 </div>
@@ -221,7 +221,7 @@ export default function Contact() {
                     <h4 className='font-semibold text-gray-900 text-sm md:text-base'>
                       Téléphone
                     </h4>
-                    <p className='text-gray-600 text-sm'>+33 1 23 45 67 89</p>
+                    <p className='text-gray-600 text-sm'>+33 6 12 53 43 76</p>
                   </div>
                 </div>
 
@@ -248,7 +248,8 @@ export default function Contact() {
                       Horaires
                     </h4>
                     <p className='text-gray-600 text-sm'>
-                      Lun-Dim: 10:00-23:00
+                      Monday - Fermé <br />
+                      Tuesday-Sunday: 11h30 - 14h30 et 18h - 21h45
                     </p>
                   </div>
                 </div>
