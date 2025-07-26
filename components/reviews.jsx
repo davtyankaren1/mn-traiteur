@@ -15,51 +15,83 @@ export default function Reviews() {
   const reviews = [
     {
       id: 1,
-      name: "Marie Dubois",
-      location: "Paris",
+      name: "Emilie Dupont",
+      location: "Strasbourg",
       rating: 5,
-      text: "Excellente expérience chez M.N. Traiteur ! Les grillades étaient parfaitement cuites et les saveurs authentiques. Le service était impeccable et l'ambiance très chaleureuse. Je recommande vivement !",
-      dish_type: "Grillades"
+      text: "Une expérience fantastique ! Les plats étaient délicieux, surtout le couscous, qui était à tomber. Le service était rapide et très sympathique. Je recommande vivement ce restaurant à tous ceux qui veulent goûter des saveurs authentiques.",
+      dish_type: "Couscous"
     },
     {
       id: 2,
-      name: "Jean-Pierre Martin",
-      location: "Lyon",
-      rating: 5,
-      text: "Le meilleur shawarma que j'ai jamais goûté ! La viande était tendre, les légumes frais et la sauce délicieuse. L'équipe est très professionnelle et accueillante.",
-      dish_type: "Shawarma"
+      name: "Thomas Berger",
+      location: "Bischheim",
+      rating: 4,
+      text: "J'ai été agréablement surpris par la qualité de la nourriture. Les assiettes étaient bien garnies et pleines de saveurs. Le personnel était attentif et très courtois. Parfait pour une soirée en famille.",
+      dish_type: "Cuisine Alsacienne"
     },
     {
       id: 3,
-      name: "Sophie Laurent",
-      location: "Marseille",
-      rating: 4,
-      text: "Cuisine française traditionnelle de qualité exceptionnelle. Les ingrédients sont frais et les plats préparés avec beaucoup d'amour. Une adresse à retenir absolument !",
+      name: "Claire Martin",
+      location: "Haguenau",
+      rating: 5,
+      text: "Le meilleur restaurant que j'ai visité ces derniers temps ! Les plats sont parfaitement équilibrés, les saveurs sont riches, et l'accueil est exceptionnel. Un vrai moment de plaisir à chaque visite.",
       dish_type: "Cuisine Française"
     },
     {
       id: 4,
-      name: "Ahmed Hassan",
-      location: "Nice",
+      name: "Julien Lefevre",
+      location: "Schiltigheim",
       rating: 5,
-      text: "Service rapide et efficace, nourriture délicieuse ! Les burgers sont généreux et savoureux. L'ambiance familiale rend l'expérience encore plus agréable.",
-      dish_type: "Burgers"
+      text: "Service impeccable et ambiance chaleureuse. Les desserts étaient divins et le plat principal était exquis. Une adresse que je vais certainement recommander à mes amis.",
+      dish_type: "Gastronomie Française"
     },
     {
       id: 5,
-      name: "Claire Moreau",
-      location: "Toulouse",
-      rating: 5,
-      text: "Livraison ponctuelle et plats encore chauds ! La qualité est constante et les prix très raisonnables. C'est devenu notre restaurant de référence pour les soirées en famille.",
-      dish_type: "Livraison"
+      name: "Sophie Charbonnier",
+      location: "Geispolsheim",
+      rating: 4,
+      text: "Très bon rapport qualité-prix. Les plats étaient savoureux et bien présentés. Un endroit idéal pour une sortie en famille. Je reviendrai sans hésiter.",
+      dish_type: "Pizza"
     },
     {
       id: 6,
-      name: "Pierre Rousseau",
-      location: "Bordeaux",
-      rating: 4,
-      text: "Très bonne découverte ! Les recettes traditionnelles sont respectées et modernisées avec goût. Le personnel est souriant et aux petits soins.",
+      name: "David Muller",
+      location: "Strasbourg",
+      rating: 5,
+      text: "Un repas incroyable, surtout le plat de viande grillée ! Les saveurs étaient parfaites et le service rapide. L'endroit est très agréable, avec une vue magnifique sur la ville.",
+      dish_type: "Grillades"
+    },
+    {
+      id: 7,
+      name: "Isabelle Klein",
+      location: "Molsheim",
+      rating: 5,
+      text: "Un endroit à découvrir absolument. Les plats étaient délicieux, les portions généreuses, et le personnel très sympathique. Un vrai régal à chaque bouchée.",
       dish_type: "Cuisine Traditionnelle"
+    },
+    {
+      id: 8,
+      name: "Maxime Dupuis",
+      location: "Obernai",
+      rating: 4,
+      text: "Très bon restaurant avec une belle ambiance. Le plat principal était un peu trop salé à mon goût, mais le reste était parfait. J'y reviendrai certainement.",
+      dish_type: "Cuisine du Terroir"
+    },
+    {
+      id: 9,
+      name: "Nathalie Rousseau",
+      location: "Strasbourg",
+      rating: 5,
+      text: "Une expérience culinaire inoubliable. Les plats étaient préparés avec soin, et les saveurs étaient équilibrées. Je recommande vivement cet endroit pour tous les gourmets.",
+      dish_type: "Menu Dégustation"
+    },
+    {
+      id: 10,
+      name: "François Lemoine",
+      location: "Saverne",
+      rating: 4,
+      text: "Très bon restaurant avec des produits frais. Le service était rapide, mais j'ai trouvé que le menu manquait un peu de variété. Néanmoins, une excellente adresse à découvrir.",
+      dish_type: "Cuisine Française"
     }
   ];
 
@@ -159,8 +191,7 @@ export default function Reviews() {
                   } bg-white rounded-2xl p-6 lg:p-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 relative flex flex-col border border-red-100`}
                   style={{
                     animationDelay: `${index * 150}ms`,
-                    transitionDelay: `${index * 50}ms`,
-                    height: "400px" // Fixed height for all cards
+                    transitionDelay: `${index * 50}ms`
                   }}
                 >
                   {/* Decorative elements */}

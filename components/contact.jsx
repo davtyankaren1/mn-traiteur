@@ -155,7 +155,7 @@ export default function Contact() {
 
                 <Button
                   type='submit'
-                  className='w-full bg-red-50 text-red-600 py-3 text-lg font-semibold hover:text-white transition-all duration-300 border border-red-200'
+                  className='w-full bg-red-50 hover:bg-red-700 text-red-600 py-3 text-lg font-semibold hover:text-white transition-all duration-300 border border-red-200'
                 >
                   Envoyer le message
                 </Button>
@@ -169,7 +169,7 @@ export default function Contact() {
             <Card className='overflow-hidden shadow-lg border-0'>
               <div className='h-64 relative'>
                 <Image
-                  src='/contact-team-photo.png'
+                  src='/logo-bg.jpg'
                   alt='Équipe M.N. Traiteur - Notre équipe professionnelle'
                   fill
                   className='object-cover hover:scale-105 transition-transform duration-300'
