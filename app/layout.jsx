@@ -15,7 +15,22 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang='fr' className='overflow-x-hidden'>
+      <link rel='icon' href='/favicon.ico' sizes='any' />
+      <link
+        rel='icon'
+        href='/favicon-16x16.png'
+        type='image/png'
+        sizes='16x16'
+      />
+      <link
+        rel='icon'
+        href='/favicon-32x32.png'
+        type='image/png'
+        sizes='32x32'
+      />
+
       <head>
+        <link rel='manifest' href='/manifest.json' />
         <title>M.N. Traiteur - Restaurant Français</title>
         <meta name='description' content={metadata.description} />
         <meta name='viewport' content={metadata.viewport} />

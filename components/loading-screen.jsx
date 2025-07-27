@@ -16,7 +16,7 @@ export default function LoadingScreen({ onLoadingComplete }) {
         setIsVisible(false);
         onLoadingComplete();
       }, 500); // 500ms fade out duration
-    }, 2000); // 2 seconds minimum loading time
+    }, 1000); // 2 seconds minimum loading time
 
     return () => {
       clearTimeout(minLoadingTime);
@@ -103,15 +103,6 @@ export default function LoadingScreen({ onLoadingComplete }) {
                 : "translate-y-[-20px] opacity-0 scale-95"
             }`}
           >
-            {/* <Image
-              src='/logo.png'
-              alt='M.N. Traiteur Logo'
-              width={120}
-              height={50}
-              className='w-auto h-auto max-w-[120px] max-h-[50px]'
-              priority
-            /> */}
-
             <Image
               src='/logo.png'
               alt='M.N. Traiteur Logo'
