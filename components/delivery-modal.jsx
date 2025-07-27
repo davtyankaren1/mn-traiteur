@@ -135,13 +135,11 @@ ${basketData
   .join("\n")}
   `;
 
-    const botToken = "8289663280:AAEbS4ar5ECoBOblEDCSArhqLgjMIjtEtXU";
-    const chatId = "760915836";
-    const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+    const url = `https://api.telegram.org/bot${process.env.NEXT_PUBLIC_TG_BOT_TOKEN}/sendMessage`;
 
     axios
       .post(url, {
-        chat_id: chatId,
+        chat_id: process.env.NEXT_PUBLIC_TG_CHAT_ID,
         text: message
       })
       .then(() => {

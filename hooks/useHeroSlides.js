@@ -3,11 +3,10 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = "https://qvancfxisnlcqhqwluht.supabase.co";
-const supabaseAnonKey =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2YW5jZnhpc25sY3FocXdsdWh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NTA2NzUsImV4cCI6MjA2OTAyNjY3NX0.ffGDFayfuJX7p7Q1yHqh3ICxIual_3V6SyNbHFZSTSk";
-
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+);
 
 export const useHeroSlides = () => {
   const [slides, setSlides] = useState([]);
