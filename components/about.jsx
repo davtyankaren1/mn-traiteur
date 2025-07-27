@@ -240,7 +240,7 @@ export default function About() {
             {features.map((feature, index) => (
               <Card
                 key={index}
-                className='feature-card text-center border-0 shadow-lg bg-white hover:shadow-2xl group'
+                className='feature-card text-center border-0 shadow-lg bg-white group'
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <CardContent className='p-4 lg:p-8'>
