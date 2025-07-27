@@ -13,6 +13,7 @@ import { Textarea } from "../components/ui/textarea";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import { toast } from "sonner";
 import Image from "next/image";
+import axios from "axios";
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -22,13 +23,48 @@ export default function Contact() {
     message: ""
   });
 
-  const handleSubmit = (e) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const sendToTelegram = () => {
+    const message = `📞 NOUVEAU MESSAGE DE CONTACT
+
+👤 Nom: ${formData.name}
+📧 Email: ${formData.email}
+${formData.phone ? `📱 Téléphone: ${formData.phone}` : ""}
+
+💬 Message:
+${formData.message}
+
+---
+📅 Reçu le: ${new Date().toLocaleString("fr-FR")}
+🌐 Source: Site web M.N. Traiteur`;
+
+    const botToken = "8289663280:AAEbS4ar5ECoBOblEDCSArhqLgjMIjtEtXU";
+    const chatId = "760915836";
+    const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+    return axios.post(url, {
+      chat_id: chatId,
+      text: message
+    });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Here you would typically send the form data to your backend
-    toast.success(
-      "Votre message a été envoyé. Nous vous contacterons bientôt."
-    );
-    setFormData({ name: "", email: "", phone: "", message: "" });
+    setIsSubmitting(true);
+
+    try {
+      await sendToTelegram();
+      toast.success(
+        "Votre message a été envoyé avec succès ! Nous vous contacterons bientôt."
+      );
+      setFormData({ name: "", email: "", phone: "", message: "" });
+    } catch (error) {
+      console.error("Erreur lors de l'envoi du message:", error);
+      toast.error("Erreur lors de l'envoi du message. Veuillez réessayer.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -63,7 +99,6 @@ export default function Contact() {
             prêts à vous aider
           </p>
         </div>
-
         <div className='grid lg:grid-cols-2 gap-12'>
           {/* Contact Form - Now on the LEFT */}
           <Card className='shadow-xl border-0 bg-white'>
@@ -94,6 +129,7 @@ export default function Contact() {
                       onChange={handleChange}
                       className='border-gray-300 focus:border-red-600 focus:ring-red-600'
                       placeholder='Votre nom'
+                      disabled={isSubmitting}
                     />
                   </div>
                   <div>
@@ -111,10 +147,10 @@ export default function Contact() {
                       onChange={handleChange}
                       className='border-gray-300 focus:border-red-600 focus:ring-red-600'
                       placeholder='+33 X XX XX XX XX'
+                      disabled={isSubmitting}
                     />
                   </div>
                 </div>
-
                 <div>
                   <label
                     htmlFor='email'
@@ -131,9 +167,9 @@ export default function Contact() {
                     onChange={handleChange}
                     className='border-gray-300 focus:border-red-600 focus:ring-red-600'
                     placeholder='votre@email.com'
+                    disabled={isSubmitting}
                   />
                 </div>
-
                 <div>
                   <label
                     htmlFor='message'
@@ -150,19 +186,19 @@ export default function Contact() {
                     onChange={handleChange}
                     className='border-gray-300 focus:border-red-600 focus:ring-red-600'
                     placeholder='Votre message...'
+                    disabled={isSubmitting}
                   />
                 </div>
-
                 <Button
                   type='submit'
-                  className='w-full bg-red-50 hover:bg-red-700 text-red-600 py-3 text-lg font-semibold hover:text-white transition-all duration-300 border border-red-200'
+                  disabled={isSubmitting}
+                  className='w-full bg-red-50 hover:bg-red-700 text-red-600 py-3 text-lg font-semibold hover:text-white transition-all duration-300 border border-red-200 disabled:opacity-50 disabled:cursor-not-allowed'
                 >
-                  Envoyer le message
+                  {isSubmitting ? "Envoi en cours..." : "Envoyer le message"}
                 </Button>
               </form>
             </CardContent>
           </Card>
-
           {/* Contact Information - Now on the RIGHT with Image at TOP */}
           <div className='space-y-8'>
             {/* Restaurant Team Image at the TOP */}
@@ -185,7 +221,6 @@ export default function Contact() {
                 </div>
               </div>
             </Card>
-
             {/* Contact Information at the BOTTOM - Mobile Optimized */}
             <div>
               <h3
@@ -194,7 +229,6 @@ export default function Contact() {
               >
                 Informations de Contact
               </h3>
-
               {/* Mobile: Stack vertically, Desktop: 2x2 Grid */}
               <div className='grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6'>
                 {/* Address */}
@@ -211,7 +245,6 @@ export default function Contact() {
                     </p>
                   </div>
                 </div>
-
                 {/* Phone */}
                 <div className='flex items-start space-x-3 p-4 bg-white rounded-lg shadow-sm border border-red-100'>
                   <div className='w-10 h-10 bg-red-600 rounded-full flex items-center justify-center flex-shrink-0'>
@@ -224,7 +257,6 @@ export default function Contact() {
                     <p className='text-gray-600 text-sm'>+33 6 12 53 43 76</p>
                   </div>
                 </div>
-
                 {/* Email */}
                 <div className='flex items-start space-x-3 p-4 bg-white rounded-lg shadow-sm border border-red-100'>
                   <div className='w-10 h-10 bg-red-600 rounded-full flex items-center justify-center flex-shrink-0'>
@@ -237,7 +269,6 @@ export default function Contact() {
                     <p className='text-gray-600 text-sm'>info@mn-traiteur.fr</p>
                   </div>
                 </div>
-
                 {/* Working Hours */}
                 <div className='flex items-start space-x-3 p-4 bg-white rounded-lg shadow-sm border border-red-100'>
                   <div className='w-10 h-10 bg-red-600 rounded-full flex items-center justify-center flex-shrink-0'>

@@ -263,7 +263,7 @@ export default function Cart({ isOpen, onClose }) {
                               variant='ghost'
                               size='sm'
                               onClick={() => handleRemoveItem(item.id)}
-                              className='text-red-600 hover:text-red-700 hover:bg-red-600/10 mt-1 transition-all duration-200 hover:scale-105'
+                              className='text-red-600 hover:text-red-700 hover:bg-red-600/10 mt-1 transition-all duration-200'
                             >
                               Supprimer
                             </Button>
