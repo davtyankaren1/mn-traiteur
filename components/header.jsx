@@ -194,8 +194,8 @@ export default function Header({ onCartClick }) {
               ))}
             </nav>
 
-            {/* Cart and Mobile Menu */}
-            <div className='flex items-center space-x-3 sm:space-x-4'>
+            {/* Cart and Mobile Menu * NEEDS RECOMMENT /} 
+            {/* <div className='flex items-center space-x-3 sm:space-x-4'>
               <Button
                 variant='ghost'
                 size='icon'
@@ -210,7 +210,6 @@ export default function Header({ onCartClick }) {
                 )}
               </Button>
 
-              {/* Mobile Menu Button */}
               <Button
                 variant='ghost'
                 size='icon'
@@ -235,7 +234,7 @@ export default function Header({ onCartClick }) {
                   />
                 </div>
               </Button>
-            </div>
+            </div> */}
           </div>
         </div>
       </header>
