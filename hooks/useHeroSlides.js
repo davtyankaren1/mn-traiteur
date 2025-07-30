@@ -34,7 +34,6 @@ export const useHeroSlides = () => {
         throw error;
       }
 
-      console.log("Hero slides from Supabase:", data);
       setSlides(data || []);
     } catch (err) {
       console.error("Error fetching hero slides:", err);

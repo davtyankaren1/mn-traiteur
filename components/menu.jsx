@@ -56,7 +56,6 @@ export default function Menu() {
     async function fetchMenuData() {
       try {
         setLoading(true);
-        console.log("Fetching menu data from Supabase...");
         const [productsResponse, categoriesResponse] = await Promise.all([
           supabase.from("products").select("*").order("name"),
           supabase.from("categories").select("*").order("name")
@@ -73,9 +72,6 @@ export default function Menu() {
           setError(`Products: ${productsResponse.error.message}`);
           return;
         }
-
-        console.log("Products from Supabase:", productsResponse.data);
-        console.log("Categories from Supabase:", categoriesResponse.data);
 
         const catMap = {};
         const categoryNames = ["Tout"];

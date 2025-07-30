@@ -20,6 +20,8 @@ export default function Home() {
     setIsLoading(false);
   };
 
+  console.log("successfully rendered");
+
   return (
     <CartProvider>
       {/* Loading Screen */}
