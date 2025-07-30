@@ -1,0 +1,12 @@
+# Allow all crawlers to access all pages except admin
+User-agent: *
+Disallow: /admin/
+Disallow: /login/
+Disallow: /user-profile/
+
+# Sitemap location
+Sitemap: https://mn-traiteur.netlify.app/sitemap.xml
+
+# Prevent some unwanted bots
+User-agent: Googlebot-Image
+Disallow: /images/

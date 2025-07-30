@@ -103,6 +103,59 @@ export default function Hero() {
 
   return (
     <>
+      <title>M.N. Traiteur - Livraison de repas à Geispolsheim</title>
+      <meta
+        name='description'
+        content='Des services de restauration et de livraison de repas délicieux à Geispolsheim.'
+      />
+      <meta
+        property='og:title'
+        content='M.N. Traiteur - Livraison de repas à Geispolsheim'
+      />
+      <meta
+        property='og:description'
+        content='Des services de restauration et de livraison de repas délicieux à Geispolsheim.'
+      />
+      <meta property='og:image' content='/default-hero-image.jpg' />
+      <meta property='og:url' content='https://mn-traiteur.netlify.app/' />
+      <meta
+        name='twitter:title'
+        content='M.N. Traiteur - Livraison de repas à Geispolsheim'
+      />
+      <meta
+        name='twitter:description'
+        content='Des services de restauration et de livraison de repas délicieux à Geispolsheim.'
+      />
+      <meta name='twitter:image' content='/default-hero-image.jpg' />
+
+      <script
+        type='application/ld+json'
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Restaurant",
+            name: "M.N. Traiteur",
+            address: {
+              "@type": "PostalAddress",
+              streetAddress: "112 route de Schirmeck",
+              addressLocality: "Strasbourg",
+              postalCode: "67200",
+              addressCountry: "FR"
+            },
+            telephone: "+33 123 456 789",
+            url: "https://mn-traiteur.netlify.app",
+            logo: "https://mn-traiteur.netlify.app/logo.png",
+            image: "https://mn-traiteur.netlify.app/default-hero-image.jpg",
+            description:
+              "Delicious catering and food delivery services in Geispolsheim.",
+            sameAs: [
+              "https://www.facebook.com/mntraiteur",
+              "https://www.instagram.com/mntraiteur"
+            ]
+          })
+        }}
+      />
+
       <style>{`
         @keyframes float-up-down {
           0%,

@@ -34,6 +34,27 @@ export default function RootLayout({ children }) {
         <title>M.N. Traiteur - Restaurant Français</title>
         <meta name='description' content={metadata.description} />
         <meta name='viewport' content={metadata.viewport} />
+
+        {/* Open Graph Meta Tags */}
+        <meta
+          property='og:title'
+          content='M.N. Traiteur - Restaurant Français'
+        />
+        <meta property='og:description' content={metadata.description} />
+        <meta property='og:image' content='/path_to_your_image.jpg' />
+        <meta property='og:url' content='https://mn-traiteur.netlify.app' />
+        <meta property='og:type' content='website' />
+
+        {/* Twitter Card Meta Tags */}
+        <meta name='twitter:card' content='summary_large_image' />
+        <meta
+          name='twitter:title'
+          content='M.N. Traiteur - Restaurant Français'
+        />
+        <meta name='twitter:description' content={metadata.description} />
+        <meta name='twitter:image' content='/path_to_your_image.jpg' />
+        <meta name='twitter:url' content='https://mn-traiteur.netlify.app' />
+
         <link rel='icon' href='/favicon.ico' sizes='any' />
         <link
           rel='icon'

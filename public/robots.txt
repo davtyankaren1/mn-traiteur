@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://mn-traiteur.netlify.app
+
+# Sitemaps
+Sitemap: https://mn-traiteur.netlify.app/sitemap.xml

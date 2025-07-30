@@ -30,6 +30,7 @@ import { cn } from "@/lib/utils";
 import { useCart } from "@/contexts/cart-context";
 import { toast } from "sonner";
 import { createClient } from "@supabase/supabase-js";
+import Head from "next/head";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -186,354 +187,434 @@ export default function Menu() {
   }
 
   return (
-    <section id='menu' className='w-full py-12 md:py-24 lg:py-32 bg-gray-50'>
-      <style jsx>{`
-        @keyframes fade-in-up {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .animate-fade-in-up {
-          animation: fade-in-up 0.6s ease-out forwards;
-          opacity: 0;
-        }
-      `}</style>
-      <div className='container px-4 md:px-6 max-w-7xl mx-auto'>
-        <div className='text-center mb-16'>
-          <div className='inline-block mb-3'>
-            <div className='flex items-center justify-center gap-2'>
-              <span className='h-1 w-10 bg-red-600 rounded-full'></span>
-              <span className='text-red-600 font-medium uppercase tracking-wider text-sm'>
-                NOTRE MENU
-              </span>
-              <span className='h-1 w-10 bg-red-600 rounded-full'></span>
-            </div>
-          </div>
-          <h2
-            className='text-3xl lg:text-4xl font-bold text-gray-900 mb-4'
-            style={{ fontFamily: "Arial" }}
-          >
-            Notre <span className='text-[#DC2626]'>Menu</span>
-          </h2>
-          <p className='text-lg text-gray-600 max-w-2xl mx-auto'>
-            Découvrez notre carte complète avec des plats authentiques préparés
-            avec passion
-          </p>
-        </div>
+    <>
+      <Head>
+        <title>Notre Menu - Découvrez les Plats Authentiques</title>
+        <meta
+          name='description'
+          content='Explorez notre carte de plats faits maison avec des ingrédients frais et locaux. Découvrez des options végétariennes, sans gluten et plus encore.'
+        />
+        <meta name='robots' content='index, follow' />
 
-        {loading && (
-          <div className='flex flex-col items-center justify-center py-12'>
-            <Loader2 className='h-12 w-12 text-red-600 animate-spin mb-4' />
-            <p
-              className='text-lg text-gray-600'
+        <meta
+          property='og:title'
+          content='Notre Menu - Découvrez les Plats Authentiques'
+        />
+        <meta
+          property='og:description'
+          content='Explorez notre carte de plats faits maison avec des ingrédients frais et locaux. Découvrez des options végétariennes, sans gluten et plus encore.'
+        />
+        <meta property='og:url' content='https://www.yoursite.com/menu' />
+        <meta property='og:type' content='website' />
+        <meta
+          property='og:image'
+          content='https://www.yoursite.com/path-to-image.jpg'
+        />
+        <meta property='og:locale' content='fr_FR' />
+
+        {/* Twitter Card Meta Tags */}
+        <meta name='twitter:card' content='summary_large_image' />
+        <meta
+          name='twitter:title'
+          content='Notre Menu - Découvrez les Plats Authentiques'
+        />
+        <meta
+          name='twitter:description'
+          content='Explorez notre carte de plats faits maison avec des ingrédients frais et locaux. Découvrez des options végétariennes, sans gluten et plus encore.'
+        />
+        <meta
+          name='twitter:image'
+          content='https://www.yoursite.com/path-to-image.jpg'
+        />
+
+        {/* Structured Data (JSON-LD) for Rich Snippets */}
+        <script
+          type='application/ld+json'
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Restaurant",
+              name: "M.N. Traiteur",
+              url: "https://www.yoursite.com/menu",
+              logo: "https://www.yoursite.com/logo.png",
+              image: "https://www.yoursite.com/path-to-image.jpg",
+              description:
+                "Découvrez notre menu avec des plats faits maison et locaux.",
+              address: {
+                "@type": "PostalAddress",
+                streetAddress: "19 rue Forlen",
+                addressLocality: "Geispolsheim",
+                postalCode: "67118",
+                addressCountry: "FR"
+              },
+              contactPoint: {
+                "@type": "ContactPoint",
+                telephone: "+33 6 12 53 43 76",
+                contactType: "Customer Service"
+              },
+              sameAs: [
+                "https://www.facebook.com/yourrestaurant",
+                "https://www.instagram.com/yourrestaurant"
+              ]
+            })
+          }}
+        ></script>
+      </Head>
+
+      <section id='menu' className='w-full py-12 md:py-24 lg:py-32 bg-gray-50'>
+        <style jsx>{`
+          @keyframes fade-in-up {
+            from {
+              opacity: 0;
+              transform: translateY(20px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+          .animate-fade-in-up {
+            animation: fade-in-up 0.6s ease-out forwards;
+            opacity: 0;
+          }
+        `}</style>
+        <div className='container px-4 md:px-6 max-w-7xl mx-auto'>
+          <div className='text-center mb-16'>
+            <div className='inline-block mb-3'>
+              <div className='flex items-center justify-center gap-2'>
+                <span className='h-1 w-10 bg-red-600 rounded-full'></span>
+                <span className='text-red-600 font-medium uppercase tracking-wider text-sm'>
+                  NOTRE MENU
+                </span>
+                <span className='h-1 w-10 bg-red-600 rounded-full'></span>
+              </div>
+            </div>
+            <h2
+              className='text-3xl lg:text-4xl font-bold text-gray-900 mb-4'
               style={{ fontFamily: "Arial" }}
             >
-              Chargement du menu depuis la base de données...
+              Notre <span className='text-[#DC2626]'>Menu</span>
+            </h2>
+            <p className='text-lg text-gray-600 max-w-2xl mx-auto'>
+              Découvrez notre carte complète avec des plats authentiques
+              préparés avec passion
             </p>
           </div>
-        )}
 
-        {error && (
-          <div className='flex flex-col items-center justify-center py-12 text-center'>
-            <div className='bg-red-100 text-red-700 p-6 rounded-lg max-w-md border border-red-200'>
-              <AlertCircle className='h-12 w-12 text-red-600 mx-auto mb-4' />
-              <p className='font-semibold mb-2' style={{ fontFamily: "Arial" }}>
-                Erreur de chargement du menu
-              </p>
-              <p className='text-sm mb-4'>{error}</p>
-              <Button
-                className='bg-red-600 hover:bg-red-700 text-white'
-                onClick={() => window.location.reload()}
+          {loading && (
+            <div className='flex flex-col items-center justify-center py-12'>
+              <Loader2 className='h-12 w-12 text-red-600 animate-spin mb-4' />
+              <p
+                className='text-lg text-gray-600'
                 style={{ fontFamily: "Arial" }}
               >
-                Réessayer
-              </Button>
+                Chargement du menu depuis la base de données...
+              </p>
             </div>
-          </div>
-        )}
+          )}
 
-        {!loading && !error && (
-          <>
-            <div className='flex flex-wrap justify-center gap-1 sm:gap-2 mb-8 sm:mb-12'>
-              {categories.map((category) => (
-                <Button
-                  key={category}
-                  variant='outline'
-                  onClick={() => {
-                    setActiveCategory(category);
-                    setItemsToShow(ITEMS_PER_PAGE);
-                  }}
-                  className={cn(
-                    "rounded-full px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm transition-colors border-red-600",
-                    activeCategory === category
-                      ? "bg-red-600 text-white hover:bg-red-700 hover:text-white"
-                      : "bg-white text-red-600 hover:bg-red-50 hover:text-red-600"
-                  )}
-                  style={{ fontFamily: "Arial" }}
-                >
-                  {category}
-                </Button>
-              ))}
-            </div>
-
-            {filteredItems.length === 0 && (
-              <div className='text-center py-12'>
+          {error && (
+            <div className='flex flex-col items-center justify-center py-12 text-center'>
+              <div className='bg-red-100 text-red-700 p-6 rounded-lg max-w-md border border-red-200'>
+                <AlertCircle className='h-12 w-12 text-red-600 mx-auto mb-4' />
                 <p
-                  className='text-lg text-gray-600'
+                  className='font-semibold mb-2'
                   style={{ fontFamily: "Arial" }}
                 >
-                  Aucun produit trouvé dans cette catégorie.
+                  Erreur de chargement du menu
                 </p>
+                <p className='text-sm mb-4'>{error}</p>
+                <Button
+                  className='bg-red-600 hover:bg-red-700 text-white'
+                  onClick={() => window.location.reload()}
+                  style={{ fontFamily: "Arial" }}
+                >
+                  Réessayer
+                </Button>
               </div>
-            )}
+            </div>
+          )}
 
-            <div className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6'>
-              {filteredItems.map((product, index) => {
-                const quantity = getItemQuantityInCart(product.id);
-                const categoryName = getCategoryName(product.category_id);
-                return (
-                  <Card
-                    key={product.id}
-                    className={`flex flex-col justify-between overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out transform animate-fade-in-up`}
-                    style={{
-                      animationDelay: `${index * 0.1}s`,
-                      animationFillMode: "both"
+          {!loading && !error && (
+            <>
+              <div className='flex flex-wrap justify-center gap-1 sm:gap-2 mb-8 sm:mb-12'>
+                {categories.map((category) => (
+                  <Button
+                    key={category}
+                    variant='outline'
+                    onClick={() => {
+                      setActiveCategory(category);
+                      setItemsToShow(ITEMS_PER_PAGE);
                     }}
+                    className={cn(
+                      "rounded-full px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm transition-colors border-red-600",
+                      activeCategory === category
+                        ? "bg-red-600 text-white hover:bg-red-700 hover:text-white"
+                        : "bg-white text-red-600 hover:bg-red-50 hover:text-red-600"
+                    )}
+                    style={{ fontFamily: "Arial" }}
                   >
-                    <div className='relative w-full aspect-[3/2] bg-gray-100 overflow-hidden'>
-                      <Image
-                        src={
-                          product.image_url ||
-                          "/placeholder.svg?height=200&width=300"
-                        }
-                        alt={product.name}
-                        fill
-                        className='object-cover transition-transform duration-300 hover:scale-105'
-                      />
-                      <div className='absolute bottom-2 right-2 bg-red-600 text-white px-2 py-1 rounded-lg shadow-lg'>
-                        <p
-                          className='text-sm font-bold'
-                          style={{ fontFamily: "Arial" }}
-                        >
-                          {product.price
-                            ? `${product.price.toFixed(2)}€`
-                            : "Prix sur demande"}
-                        </p>
-                      </div>
-                      <div className='absolute top-2 left-2 bg-black/70 text-white px-2 py-1 rounded-lg text-xs'>
-                        {categoryName}
-                      </div>
-                    </div>
-                    <CardContent className='p-2 sm:p-4'>
-                      <CardTitle
-                        className='text-sm sm:text-xl font-semibold mb-1 sm:mb-2 line-clamp-2'
-                        style={{ fontFamily: "Arial" }}
-                      >
-                        {product.name}
-                      </CardTitle>
-                      <CardDescription className='text-xs sm:text-sm text-muted-foreground hidden sm:block'>
-                        {product.description}
-                      </CardDescription>
-                    </CardContent>
-                    <CardFooter className='flex flex-col gap-1 sm:gap-2 p-2 sm:p-4 pt-1'>
-                      {quantity === 0 ? (
-                        <Button
-                          className='w-full bg-red-600 hover:bg-red-700 text-white h-8 sm:h-10 text-xs sm:text-sm'
-                          onClick={() =>
-                            handleUpdateCartItemQuantity(product.id, 1)
+                    {category}
+                  </Button>
+                ))}
+              </div>
+
+              {filteredItems.length === 0 && (
+                <div className='text-center py-12'>
+                  <p
+                    className='text-lg text-gray-600'
+                    style={{ fontFamily: "Arial" }}
+                  >
+                    Aucun produit trouvé dans cette catégorie.
+                  </p>
+                </div>
+              )}
+
+              <div className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6'>
+                {filteredItems.map((product, index) => {
+                  const quantity = getItemQuantityInCart(product.id);
+                  const categoryName = getCategoryName(product.category_id);
+                  return (
+                    <Card
+                      key={product.id}
+                      className={`flex flex-col justify-between overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out transform animate-fade-in-up`}
+                      style={{
+                        animationDelay: `${index * 0.1}s`,
+                        animationFillMode: "both"
+                      }}
+                    >
+                      <div className='relative w-full aspect-[3/2] bg-gray-100 overflow-hidden'>
+                        <Image
+                          src={
+                            product.image_url ||
+                            "/placeholder.svg?height=200&width=300"
                           }
-                          disabled={!product.price}
+                          alt={product.name}
+                          fill
+                          className='object-cover transition-transform duration-300 hover:scale-105'
+                        />
+                        <div className='absolute bottom-2 right-2 bg-red-600 text-white px-2 py-1 rounded-lg shadow-lg'>
+                          <p
+                            className='text-sm font-bold'
+                            style={{ fontFamily: "Arial" }}
+                          >
+                            {product.price
+                              ? `${product.price.toFixed(2)}€`
+                              : "Prix sur demande"}
+                          </p>
+                        </div>
+                        <div className='absolute top-2 left-2 bg-black/70 text-white px-2 py-1 rounded-lg text-xs'>
+                          {categoryName}
+                        </div>
+                      </div>
+                      <CardContent className='p-2 sm:p-4'>
+                        <CardTitle
+                          className='text-sm sm:text-xl font-semibold mb-1 sm:mb-2 line-clamp-2'
                           style={{ fontFamily: "Arial" }}
                         >
-                          <ShoppingCart className='h-3 w-3 sm:h-4 sm:w-4 sm:mr-2' />
-                          <span className='hidden sm:inline'>
-                            {!product.price
-                              ? "Prix sur demande"
-                              : "Ajouter au panier"}
-                          </span>
-                        </Button>
-                      ) : (
-                        <div className='flex items-center justify-between w-full gap-1 sm:gap-2'>
+                          {product.name}
+                        </CardTitle>
+                        <CardDescription className='text-xs sm:text-sm text-muted-foreground hidden sm:block'>
+                          {product.description}
+                        </CardDescription>
+                      </CardContent>
+                      <CardFooter className='flex flex-col gap-1 sm:gap-2 p-2 sm:p-4 pt-1'>
+                        {quantity === 0 ? (
                           <Button
-                            variant='outline'
-                            size='icon'
-                            onClick={() =>
-                              handleUpdateCartItemQuantity(product.id, -1)
-                            }
-                            className='h-8 w-8 sm:h-10 sm:w-10'
-                          >
-                            <Minus className='h-3 w-3 sm:h-4 sm:w-4' />
-                          </Button>
-                          <span className='text-sm sm:text-lg font-semibold flex-1 text-center'>
-                            {quantity}
-                          </span>
-                          <Button
-                            variant='outline'
-                            size='icon'
+                            className='w-full bg-red-600 hover:bg-red-700 text-white h-8 sm:h-10 text-xs sm:text-sm'
                             onClick={() =>
                               handleUpdateCartItemQuantity(product.id, 1)
                             }
-                            className='h-8 w-8 sm:h-10 sm:w-10'
-                          >
-                            <Plus className='h-3 w-3 sm:h-4 sm:w-4' />
-                          </Button>
-                        </div>
-                      )}
-                      <Dialog
-                        open={isModalOpen && selectedProduct?.id === product.id}
-                        onOpenChange={setIsModalOpen}
-                      >
-                        <DialogTrigger asChild>
-                          <Button
-                            variant='outline'
-                            className='w-full bg-red-50 text-red-600 h-8 sm:h-10 text-xs sm:text-sm hover:bg-red-600/20 hover:text-red-600 border-0'
-                            onClick={() => handleQuickView(product)}
+                            disabled={!product.price}
                             style={{ fontFamily: "Arial" }}
                           >
-                            <Eye className='h-3 w-3 sm:h-4 sm:w-4 sm:mr-2' />
+                            <ShoppingCart className='h-3 w-3 sm:h-4 sm:w-4 sm:mr-2' />
                             <span className='hidden sm:inline'>
-                              Aperçu rapide
+                              {!product.price
+                                ? "Prix sur demande"
+                                : "Ajouter au panier"}
                             </span>
-                            <span className='sm:hidden'>Voir</span>
                           </Button>
-                        </DialogTrigger>
-                        {selectedProduct && (
-                          <DialogContent className='w-[95vw] max-w-[500px] max-h-[90vh] p-4 sm:p-6'>
-                            <DialogHeader>
-                              <DialogTitle
-                                className='text-xl sm:text-3xl font-bold'
-                                style={{ fontFamily: "Arial" }}
-                              >
-                                {selectedProduct.name}
-                              </DialogTitle>
-                              <DialogDescription>
-                                Catégorie:{" "}
-                                {getCategoryName(selectedProduct.category_id)}
-                              </DialogDescription>
-                            </DialogHeader>
-                            <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mt-4'>
-                              <div className='relative w-full h-48 sm:h-64 rounded-lg overflow-hidden'>
-                                <Image
-                                  src={
-                                    selectedProduct.image_url ||
-                                    "/placeholder.svg?height=300&width=300"
-                                  }
-                                  alt={selectedProduct.name}
-                                  fill
-                                  className='object-cover'
-                                />
-                              </div>
-                              <div className='flex flex-col justify-between'>
-                                <div className='space-y-3 sm:space-y-4'>
-                                  <p
-                                    className='text-xl sm:text-2xl font-bold text-gray-900'
-                                    style={{ fontFamily: "Arial" }}
-                                  >
-                                    {selectedProduct.price
-                                      ? `${selectedProduct.price.toFixed(2)}€`
-                                      : "Prix sur demande"}
-                                  </p>
-                                  <p className='text-sm sm:text-base text-muted-foreground'>
-                                    {selectedProduct.description}
-                                  </p>
-
-                                  {/* Check if description and composition are different */}
-                                  {selectedProduct.composition &&
-                                    selectedProduct.composition !==
-                                      selectedProduct.description && (
-                                      <div>
-                                        <h4 className='font-semibold mb-1'>
-                                          Composition:
-                                        </h4>
-                                        <p className='text-sm text-muted-foreground'>
-                                          {selectedProduct.composition}
-                                        </p>
-                                      </div>
-                                    )}
-                                </div>
-
-                                {quantity === 0 ? (
-                                  <Button
-                                    className='w-full mt-4 sm:mt-6 bg-red-600 hover:bg-red-700 text-white'
-                                    onClick={() =>
-                                      handleUpdateCartItemQuantity(
-                                        product.id,
-                                        1
-                                      )
+                        ) : (
+                          <div className='flex items-center justify-between w-full gap-1 sm:gap-2'>
+                            <Button
+                              variant='outline'
+                              size='icon'
+                              onClick={() =>
+                                handleUpdateCartItemQuantity(product.id, -1)
+                              }
+                              className='h-8 w-8 sm:h-10 sm:w-10'
+                            >
+                              <Minus className='h-3 w-3 sm:h-4 sm:w-4' />
+                            </Button>
+                            <span className='text-sm sm:text-lg font-semibold flex-1 text-center'>
+                              {quantity}
+                            </span>
+                            <Button
+                              variant='outline'
+                              size='icon'
+                              onClick={() =>
+                                handleUpdateCartItemQuantity(product.id, 1)
+                              }
+                              className='h-8 w-8 sm:h-10 sm:w-10'
+                            >
+                              <Plus className='h-3 w-3 sm:h-4 sm:w-4' />
+                            </Button>
+                          </div>
+                        )}
+                        <Dialog
+                          open={
+                            isModalOpen && selectedProduct?.id === product.id
+                          }
+                          onOpenChange={setIsModalOpen}
+                        >
+                          <DialogTrigger asChild>
+                            <Button
+                              variant='outline'
+                              className='w-full bg-red-50 text-red-600 h-8 sm:h-10 text-xs sm:text-sm hover:bg-red-600/20 hover:text-red-600 border-0'
+                              onClick={() => handleQuickView(product)}
+                              style={{ fontFamily: "Arial" }}
+                            >
+                              <Eye className='h-3 w-3 sm:h-4 sm:w-4 sm:mr-2' />
+                              <span className='hidden sm:inline'>
+                                Aperçu rapide
+                              </span>
+                              <span className='sm:hidden'>Voir</span>
+                            </Button>
+                          </DialogTrigger>
+                          {selectedProduct && (
+                            <DialogContent className='w-[95vw] max-w-[500px] max-h-[90vh] p-4 sm:p-6'>
+                              <DialogHeader>
+                                <DialogTitle
+                                  className='text-xl sm:text-3xl font-bold'
+                                  style={{ fontFamily: "Arial" }}
+                                >
+                                  {selectedProduct.name}
+                                </DialogTitle>
+                                <DialogDescription>
+                                  Catégorie:{" "}
+                                  {getCategoryName(selectedProduct.category_id)}
+                                </DialogDescription>
+                              </DialogHeader>
+                              <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mt-4'>
+                                <div className='relative w-full h-48 sm:h-64 rounded-lg overflow-hidden'>
+                                  <Image
+                                    src={
+                                      selectedProduct.image_url ||
+                                      "/placeholder.svg?height=300&width=300"
                                     }
-                                    disabled={!selectedProduct.price}
-                                    style={{ fontFamily: "Arial" }}
-                                  >
-                                    <ShoppingCart className='mr-2 h-4 w-4' />
-                                    {!selectedProduct.price
-                                      ? "Prix sur demande"
-                                      : "Ajouter au panier"}
-                                  </Button>
-                                ) : (
-                                  <div className='flex items-center justify-between w-full gap-2 mt-4 sm:mt-6'>
-                                    <Button
-                                      variant='outline'
-                                      size='icon'
-                                      onClick={() =>
-                                        handleUpdateCartItemQuantity(
-                                          product.id,
-                                          -1
-                                        )
-                                      }
-                                      className='h-10 w-10'
+                                    alt={selectedProduct.name}
+                                    fill
+                                    className='object-cover'
+                                  />
+                                </div>
+                                <div className='flex flex-col justify-between'>
+                                  <div className='space-y-3 sm:space-y-4'>
+                                    <p
+                                      className='text-xl sm:text-2xl font-bold text-gray-900'
+                                      style={{ fontFamily: "Arial" }}
                                     >
-                                      <Minus className='h-4 w-4' />
-                                    </Button>
-                                    <span className='text-lg font-semibold flex-1 text-center'>
-                                      {quantity}
-                                    </span>
+                                      {selectedProduct.price
+                                        ? `${selectedProduct.price.toFixed(2)}€`
+                                        : "Prix sur demande"}
+                                    </p>
+                                    <p className='text-sm sm:text-base text-muted-foreground'>
+                                      {selectedProduct.description}
+                                    </p>
+
+                                    {/* Check if description and composition are different */}
+                                    {selectedProduct.composition &&
+                                      selectedProduct.composition !==
+                                        selectedProduct.description && (
+                                        <div>
+                                          <h4 className='font-semibold mb-1'>
+                                            Composition:
+                                          </h4>
+                                          <p className='text-sm text-muted-foreground'>
+                                            {selectedProduct.composition}
+                                          </p>
+                                        </div>
+                                      )}
+                                  </div>
+
+                                  {quantity === 0 ? (
                                     <Button
-                                      variant='outline'
-                                      size='icon'
+                                      className='w-full mt-4 sm:mt-6 bg-red-600 hover:bg-red-700 text-white'
                                       onClick={() =>
                                         handleUpdateCartItemQuantity(
                                           product.id,
                                           1
                                         )
                                       }
-                                      className='h-10 w-10'
+                                      disabled={!selectedProduct.price}
+                                      style={{ fontFamily: "Arial" }}
                                     >
-                                      <Plus className='h-4 w-4' />
+                                      <ShoppingCart className='mr-2 h-4 w-4' />
+                                      {!selectedProduct.price
+                                        ? "Prix sur demande"
+                                        : "Ajouter au panier"}
                                     </Button>
-                                  </div>
-                                )}
+                                  ) : (
+                                    <div className='flex items-center justify-between w-full gap-2 mt-4 sm:mt-6'>
+                                      <Button
+                                        variant='outline'
+                                        size='icon'
+                                        onClick={() =>
+                                          handleUpdateCartItemQuantity(
+                                            product.id,
+                                            -1
+                                          )
+                                        }
+                                        className='h-10 w-10'
+                                      >
+                                        <Minus className='h-4 w-4' />
+                                      </Button>
+                                      <span className='text-lg font-semibold flex-1 text-center'>
+                                        {quantity}
+                                      </span>
+                                      <Button
+                                        variant='outline'
+                                        size='icon'
+                                        onClick={() =>
+                                          handleUpdateCartItemQuantity(
+                                            product.id,
+                                            1
+                                          )
+                                        }
+                                        className='h-10 w-10'
+                                      >
+                                        <Plus className='h-4 w-4' />
+                                      </Button>
+                                    </div>
+                                  )}
+                                </div>
                               </div>
-                            </div>
-                          </DialogContent>
-                        )}
-                      </Dialog>
-                    </CardFooter>
-                  </Card>
-                );
-              })}
-            </div>
-
-            {itemsToShow < totalItemsInCategory && (
-              <div className='flex justify-center mt-8'>
-                <Button
-                  onClick={() =>
-                    setItemsToShow((prev) => prev + ITEMS_PER_PAGE)
-                  }
-                  className='bg-red-600 hover:bg-red-700 text-white px-8 py-3 text-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg'
-                  style={{ fontFamily: "Arial" }}
-                >
-                  Voir plus ({totalItemsInCategory - itemsToShow} restants)
-                </Button>
+                            </DialogContent>
+                          )}
+                        </Dialog>
+                      </CardFooter>
+                    </Card>
+                  );
+                })}
               </div>
-            )}
-          </>
-        )}
-      </div>
-    </section>
+
+              {itemsToShow < totalItemsInCategory && (
+                <div className='flex justify-center mt-8'>
+                  <Button
+                    onClick={() =>
+                      setItemsToShow((prev) => prev + ITEMS_PER_PAGE)
+                    }
+                    className='bg-red-600 hover:bg-red-700 text-white px-8 py-3 text-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg'
+                    style={{ fontFamily: "Arial" }}
+                  >
+                    Voir plus ({totalItemsInCategory - itemsToShow} restants)
+                  </Button>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </section>
+    </>
   );
 }

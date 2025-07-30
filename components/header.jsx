@@ -12,6 +12,7 @@ import {
 import { Button } from "../components/ui/button";
 import { useCart } from "../contexts/cart-context";
 import Image from "next/image";
+import Head from "next/head";
 
 export default function Header({ onCartClick }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -82,6 +83,40 @@ export default function Header({ onCartClick }) {
 
   return (
     <>
+      <Head>
+        <title>M.N. Traiteur - Quality French Cuisine</title>
+        <meta
+          name='description'
+          content='M.N. Traiteur offers authentic French cuisine. Order now for the best quality food delivery in Strasbourg.'
+        />
+        <meta name='robots' content='index, follow' />
+
+        <script
+          type='application/ld+json'
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Traiteur",
+              name: "M.N. Traiteur",
+              address: {
+                "@type": "PostalAddress",
+                streetAddress: "19 rue Forlen 67118 Geispolsheim",
+                addressLocality: "Strasbourg",
+                postalCode: "67200",
+                addressCountry: "FR"
+              },
+              telephone: "+33 6 12 53 43 76",
+              url: "https://mn-traiteur.netlify.app",
+              logo: "/logo.png",
+              cuisine: "French",
+              // Update this to a full URL if the menu has a dedicated page
+              menu: "https://mn-traiteur.netlify.app/#menu",
+              priceRange: "$$"
+            })
+          }}
+        />
+      </Head>
+
       <style jsx>{`
         @keyframes slideInFromTop {
           from {
@@ -196,7 +231,7 @@ export default function Header({ onCartClick }) {
 
             {/* Cart and Mobile Menu */}
             <div className='flex items-center space-x-3 sm:space-x-4'>
-              {/* <Button
+              <Button
                 variant='ghost'
                 size='icon'
                 onClick={onCartClick}
@@ -208,7 +243,7 @@ export default function Header({ onCartClick }) {
                     {totalItems}
                   </span>
                 )}
-              </Button> */}
+              </Button>
 
               <Button
                 variant='ghost'

@@ -3,9 +3,9 @@
 import { Award, Heart, Users, Clock } from "lucide-react";
 import Image from "next/image";
 import { Card, CardContent } from "../components/ui/card";
+import Head from "next/head";
 
 export default function About() {
-  // TODO: Replace with Redux store data
   const features = [
     {
       icon: Heart,
@@ -38,6 +38,31 @@ export default function About() {
 
   return (
     <>
+      <Head>
+        <title>
+          À propos de M.N. Traiteur - Traiteur français traditionnel
+        </title>
+        <meta
+          name='description'
+          content="Découvrez l'histoire et les valeurs de M.N. Traiteur, un traiteur français spécialisé dans des plats préparés avec amour, des ingrédients de qualité, et une ambiance familiale."
+        />
+        <meta
+          property='og:title'
+          content='À propos de M.N. Traiteur - Traiteur français traditionnel'
+        />
+        <meta
+          property='og:description'
+          content="Découvrez l'histoire et les valeurs de M.N. Traiteur, un traiteur français spécialisé dans des plats préparés avec amour, des ingrédients de qualité, et une ambiance familiale."
+        />
+        <meta
+          property='og:image'
+          content='https://example.com/path-to-your-image.jpg'
+        />
+        <meta property='og:type' content='website' />
+        <meta property='og:url' content='https://mntraiteur.fr/a-propos' />
+        <meta name='robots' content='index, follow' />
+      </Head>
+
       <style jsx>{`
         @keyframes float3D {
           0%,
@@ -258,10 +283,6 @@ export default function About() {
                   <p className='text-gray-600 text-xs lg:text-sm leading-relaxed group-hover:text-gray-700 transition-colors duration-300 hidden lg:block'>
                     {feature.description}
                   </p>
-
-                  {/* Decorative elements */}
-                  <div className='absolute top-2 right-2 w-2 h-2 bg-red-200 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500'></div>
-                  <div className='absolute bottom-2 left-2 w-1.5 h-1.5 bg-red-300 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700'></div>
                 </CardContent>
               </Card>
             ))}
