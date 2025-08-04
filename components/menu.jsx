@@ -31,11 +31,21 @@ import { useCart } from "@/contexts/cart-context";
 import { toast } from "sonner";
 import { createClient } from "@supabase/supabase-js";
 import Head from "next/head";
+import SelectionModal from "@/components/selection-modal";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 );
+
+const SIDE_DISH_OPTIONS = [
+  "Frites",
+  "pomme de terre sautée",
+  "riz",
+  "pâtes",
+  "salade verte"
+];
+const SAUCE_OPTIONS = ["Sauce balsamique", "Sauce césar"];
 
 export default function Menu() {
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -45,12 +55,16 @@ export default function Menu() {
   const ITEMS_PER_PAGE = 12;
   const { addItem, updateQuantity, removeItem, items, isLoaded } = useCart();
 
-  // State for Supabase data
   const [menuItems, setMenuItems] = useState([]);
   const [categories, setCategories] = useState([]);
   const [categoriesMap, setCategoriesMap] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const [isSelectionModalOpen, setIsSelectionModalOpen] = useState(false);
+  const [productAwaitingSelection, setProductAwaitingSelection] =
+    useState(null);
+  const [selectionModalType, setSelectionModalType] = useState("");
 
   useEffect(() => {
     async function fetchMenuData() {
@@ -66,7 +80,6 @@ export default function Menu() {
           setError(`Categories: ${categoriesResponse.error.message}`);
           return;
         }
-
         if (productsResponse.error) {
           console.error("Products error:", productsResponse.error);
           setError(`Products: ${productsResponse.error.message}`);
@@ -92,7 +105,6 @@ export default function Menu() {
         setLoading(false);
       }
     }
-
     fetchMenuData();
   }, []);
 
@@ -123,38 +135,102 @@ export default function Menu() {
     }).length;
   }, [menuItems, activeCategory, categoriesMap]);
 
+  // MODIFIED: getItemQuantityInCart now sums quantities of all instances of a product
   const getItemQuantityInCart = (itemId) => {
-    const cartItem = items.find((item) => item.id === itemId);
-    return cartItem ? cartItem.quantity : 0;
+    return items
+      .filter((item) => item.id === itemId)
+      .reduce((sum, item) => sum + item.quantity, 0);
   };
 
-  const handleUpdateCartItemQuantity = (productId, change) => {
-    const currentQuantity = getItemQuantityInCart(productId);
-    const newQuantity = currentQuantity + change;
+  // MODIFIED: handleUpdateCartItemQuantity now triggers selection modal for specific categories
+  const handleUpdateCartItemQuantity = (product, change) => {
+    const categoryName = getCategoryName(product.category_id);
+    // --- DEBUGGING LOGS START ---
+    console.log(
+      `[DEBUG] Product clicked: ${product.name}, Category Name: "${categoryName}"`
+    );
+    // --- DEBUGGING LOGS END ---
 
-    if (newQuantity <= 0) {
-      if (currentQuantity > 0) {
-        removeItem(productId);
-        const item = menuItems.find((item) => item.id === productId);
-        if (item) {
-          toast.success(`${item.name} retiré du panier`);
+    const requiresSelection =
+      categoryName === "Nos Assiettes" || categoryName === "Nos Salads";
+
+    // --- DEBUGGING LOGS START ---
+    console.log(`[DEBUG] Requires selection: ${requiresSelection}`);
+    // --- DEBUGGING LOGS END ---
+
+    if (change === 1) {
+      // User wants to add/increment
+      if (requiresSelection) {
+        // Always open selection modal for these categories when adding
+        setProductAwaitingSelection(product);
+        const type = categoryName === "Nos Assiettes" ? "sideDish" : "sauce";
+        setSelectionModalType(type);
+        setIsSelectionModalOpen(true);
+        // --- DEBUGGING LOGS START ---
+        console.log(
+          `[DEBUG] Setting modal type to: "${type}" and opening modal.`
+        );
+        // --- DEBUGGING LOGS END ---
+        return; // Stop here, actual add happens after selection
+      } else {
+        // For other categories, just add/increment directly
+        const existingCartItem = items.find((item) => item.id === product.id);
+        if (existingCartItem) {
+          updateQuantity(product.id, existingCartItem.quantity + 1);
+        } else {
+          addItem({
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            image: product.image_url,
+            quantity: 1,
+            selectedOption: undefined // No option for these items
+          });
+          toast.success(`${product.name} ajouté au panier`);
         }
       }
-    } else if (currentQuantity === 0) {
-      const item = menuItems.find((item) => item.id === productId);
-      if (item) {
-        const newCartItem = {
-          id: item.id,
-          name: item.name,
-          price: item.price,
-          image: item.image_url,
-          quantity: 1
-        };
-        addItem(newCartItem);
-        toast.success(`${item.name} ajouté au panier`);
+    } else if (change === -1) {
+      const itemsOfThisProduct = items.filter((item) => item.id === product.id);
+
+      if (itemsOfThisProduct.length > 0) {
+        const itemToDecrement = itemsOfThisProduct[0]; // Simplest approach
+
+        if (itemToDecrement.quantity === 1) {
+          removeItem(itemToDecrement.id, itemToDecrement.selectedOption);
+          toast.success(
+            `${itemToDecrement.name}${
+              itemToDecrement.selectedOption
+                ? ` (${itemToDecrement.selectedOption})`
+                : ""
+            } retiré du panier`
+          );
+        } else {
+          updateQuantity(
+            itemToDecrement.id,
+            itemToDecrement.quantity - 1,
+            itemToDecrement.selectedOption
+          );
+        }
       }
-    } else {
-      updateQuantity(productId, newQuantity);
+    }
+  };
+
+  const handleProductAddWithSelection = (selectedOption) => {
+    if (productAwaitingSelection) {
+      const newCartItem = {
+        id: productAwaitingSelection.id,
+        name: productAwaitingSelection.name,
+        price: productAwaitingSelection.price,
+        image: productAwaitingSelection.image_url,
+        quantity: 1,
+        selectedOption: selectedOption
+      };
+      addItem(newCartItem);
+      toast.success(
+        `${productAwaitingSelection.name} avec ${selectedOption} ajouté au panier`
+      );
+      setProductAwaitingSelection(null);
+      setSelectionModalType("");
     }
   };
 
@@ -191,7 +267,6 @@ export default function Menu() {
           content='Explorez notre carte de plats faits maison avec des ingrédients frais et locaux. Découvrez des options végétariennes, sans gluten et plus encore.'
         />
         <meta name='robots' content='index, follow' />
-
         <meta
           property='og:title'
           content='Notre Menu - Découvrez les Plats Authentiques'
@@ -207,7 +282,6 @@ export default function Menu() {
           content='https://www.yoursite.com/path-to-image.jpg'
         />
         <meta property='og:locale' content='fr_FR' />
-
         {/* Twitter Card Meta Tags */}
         <meta name='twitter:card' content='summary_large_image' />
         <meta
@@ -222,7 +296,6 @@ export default function Menu() {
           name='twitter:image'
           content='https://www.yoursite.com/path-to-image.jpg'
         />
-
         {/* Structured Data (JSON-LD) for Rich Snippets */}
         <script
           type='application/ld+json'
@@ -256,7 +329,6 @@ export default function Menu() {
           }}
         ></script>
       </Head>
-
       <section id='menu' className='w-full py-12 md:py-24 lg:py-32 bg-gray-50'>
         <style jsx>{`
           @keyframes fade-in-up {
@@ -296,7 +368,6 @@ export default function Menu() {
               préparés avec passion
             </p>
           </div>
-
           {loading && (
             <div className='flex flex-col items-center justify-center py-12'>
               <Loader2 className='h-12 w-12 text-red-600 animate-spin mb-4' />
@@ -308,7 +379,6 @@ export default function Menu() {
               </p>
             </div>
           )}
-
           {error && (
             <div className='flex flex-col items-center justify-center py-12 text-center'>
               <div className='bg-red-100 text-red-700 p-6 rounded-lg max-w-md border border-red-200'>
@@ -330,7 +400,6 @@ export default function Menu() {
               </div>
             </div>
           )}
-
           {!loading && !error && (
             <>
               <div className='flex flex-wrap justify-center gap-1 sm:gap-2 mb-8 sm:mb-12'>
@@ -354,7 +423,6 @@ export default function Menu() {
                   </Button>
                 ))}
               </div>
-
               {filteredItems.length === 0 && (
                 <div className='text-center py-12'>
                   <p
@@ -365,11 +433,13 @@ export default function Menu() {
                   </p>
                 </div>
               )}
-
               <div className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6'>
                 {filteredItems.map((product, index) => {
-                  const quantity = getItemQuantityInCart(product.id);
+                  const quantity = getItemQuantityInCart(product.id); // This quantity is for items without specific options
                   const categoryName = getCategoryName(product.category_id);
+                  const requiresSelection =
+                    categoryName === "Nos Assiettes" ||
+                    categoryName === "Nos Salads";
                   return (
                     <Card
                       key={product.id}
@@ -415,12 +485,13 @@ export default function Menu() {
                         </CardDescription>
                       </CardContent>
                       <CardFooter className='flex flex-col gap-1 sm:gap-2 p-2 sm:p-4 pt-1'>
+                        {/* MODIFIED: Conditional rendering for "Ajouter au panier" vs. +/- controls */}
                         {quantity === 0 ? (
                           <Button
                             className='w-full bg-red-600 hover:bg-red-700 text-white h-8 sm:h-10 text-xs sm:text-sm'
                             onClick={() =>
-                              handleUpdateCartItemQuantity(product.id, 1)
-                            }
+                              handleUpdateCartItemQuantity(product, 1)
+                            } // This will open the selection modal if requiresSelection is true
                             disabled={!product.price}
                             style={{ fontFamily: "Arial" }}
                           >
@@ -437,8 +508,8 @@ export default function Menu() {
                               variant='outline'
                               size='icon'
                               onClick={() =>
-                                handleUpdateCartItemQuantity(product.id, -1)
-                              }
+                                handleUpdateCartItemQuantity(product, -1)
+                              } // Decrement an existing instance
                               className='h-8 w-8 sm:h-10 sm:w-10'
                             >
                               <Minus className='h-3 w-3 sm:h-4 sm:w-4' />
@@ -450,8 +521,8 @@ export default function Menu() {
                               variant='outline'
                               size='icon'
                               onClick={() =>
-                                handleUpdateCartItemQuantity(product.id, 1)
-                              }
+                                handleUpdateCartItemQuantity(product, 1)
+                              } // Re-open selection modal if requiresSelection is true, otherwise increment
                               className='h-8 w-8 sm:h-10 sm:w-10'
                             >
                               <Plus className='h-3 w-3 sm:h-4 sm:w-4' />
@@ -517,7 +588,6 @@ export default function Menu() {
                                     <p className='text-sm sm:text-base text-muted-foreground'>
                                       {selectedProduct.description}
                                     </p>
-
                                     {/* Check if description and composition are different */}
                                     {selectedProduct.composition &&
                                       selectedProduct.composition !==
@@ -532,13 +602,31 @@ export default function Menu() {
                                         </div>
                                       )}
                                   </div>
-
-                                  {quantity === 0 ? (
+                                  {/* MODIFIED: Quick view add to cart button also triggers selection modal */}
+                                  {requiresSelection ? (
+                                    <Button
+                                      className='w-full mt-4 sm:mt-6 bg-red-600 hover:bg-red-700 text-white'
+                                      onClick={() => {
+                                        setIsModalOpen(false); // Close quick view modal
+                                        handleUpdateCartItemQuantity(
+                                          selectedProduct,
+                                          1
+                                        ); // This will open the selection modal
+                                      }}
+                                      disabled={!selectedProduct.price}
+                                      style={{ fontFamily: "Arial" }}
+                                    >
+                                      <ShoppingCart className='mr-2 h-4 w-4' />
+                                      {!selectedProduct.price
+                                        ? "Prix sur demande"
+                                        : "Ajouter au panier"}
+                                    </Button>
+                                  ) : quantity === 0 ? (
                                     <Button
                                       className='w-full mt-4 sm:mt-6 bg-red-600 hover:bg-red-700 text-white'
                                       onClick={() =>
                                         handleUpdateCartItemQuantity(
-                                          product.id,
+                                          selectedProduct,
                                           1
                                         )
                                       }
@@ -557,7 +645,7 @@ export default function Menu() {
                                         size='icon'
                                         onClick={() =>
                                           handleUpdateCartItemQuantity(
-                                            product.id,
+                                            selectedProduct,
                                             -1
                                           )
                                         }
@@ -573,7 +661,7 @@ export default function Menu() {
                                         size='icon'
                                         onClick={() =>
                                           handleUpdateCartItemQuantity(
-                                            product.id,
+                                            selectedProduct,
                                             1
                                           )
                                         }
@@ -593,7 +681,6 @@ export default function Menu() {
                   );
                 })}
               </div>
-
               {itemsToShow < totalItemsInCategory && (
                 <div className='flex justify-center mt-8'>
                   <Button
@@ -611,6 +698,26 @@ export default function Menu() {
           )}
         </div>
       </section>
+
+      {/* NEW: Selection Modal */}
+      <SelectionModal
+        isOpen={isSelectionModalOpen}
+        onClose={() => setIsSelectionModalOpen(false)}
+        options={
+          selectionModalType === "sideDish" ? SIDE_DISH_OPTIONS : SAUCE_OPTIONS
+        }
+        title={
+          selectionModalType === "sideDish"
+            ? "Choisissez votre accompagnement"
+            : "Choisissez votre sauce"
+        }
+        description={
+          selectionModalType === "sideDish"
+            ? "Veuillez sélectionner un accompagnement pour votre plat."
+            : "Veuillez sélectionner une sauce pour votre salade."
+        }
+        onSelect={handleProductAddWithSelection}
+      />
     </>
   );
 }

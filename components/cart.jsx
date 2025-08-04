@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import { X, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -7,37 +6,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useCart } from "@/contexts/cart-context";
 import DeliveryModal from "@/components/delivery-modal";
 
-// localStorage utility functions
-const CART_STORAGE_KEY = "restaurant-cart";
-
-const saveCartToLocalStorage = (cartItems) => {
-  try {
-    if (typeof window !== "undefined") {
-      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
-    }
-  } catch (error) {
-    console.error("Error saving cart to localStorage:", error);
-  }
-};
-
-const loadCartFromLocalStorage = () => {
-  try {
-    if (typeof window !== "undefined") {
-      const savedCart = localStorage.getItem(CART_STORAGE_KEY);
-      return savedCart ? JSON.parse(savedCart) : [];
-    }
-  } catch (error) {
-    console.error("Error loading cart from localStorage:", error);
-  }
-  return [];
-};
-
 export default function Cart({ isOpen, onClose }) {
   const { items, updateQuantity, removeItem, getTotalPrice } = useCart();
   const [isDeliveryOpen, setIsDeliveryOpen] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [shouldRender, setShouldRender] = useState(false);
-
   const deliveryFee = 5; // Fixed delivery fee - changed from 500 to 5
   const totalWithDelivery =
     getTotalPrice() + (items.length > 0 ? deliveryFee : 0);
@@ -83,26 +56,22 @@ export default function Cart({ isOpen, onClose }) {
     setIsDeliveryOpen(true);
   };
 
-  // Handle quantity update with localStorage
-  const handleUpdateQuantity = (itemId, newQuantity) => {
+  // MODIFIED: handleUpdateQuantity now passes selectedOption to useCart
+  const handleUpdateQuantity = (
+    itemId,
+    newQuantity,
+    selectedOption = undefined
+  ) => {
     if (newQuantity <= 0) {
-      handleRemoveItem(itemId);
+      handleRemoveItem(itemId, selectedOption);
     } else {
-      updateQuantity(itemId, newQuantity);
-      // Update localStorage after updating quantity
-      const updatedItems = items.map((item) =>
-        item.id === itemId ? { ...item, quantity: newQuantity } : item
-      );
-      saveCartToLocalStorage(updatedItems);
+      updateQuantity(itemId, newQuantity, selectedOption);
     }
   };
 
-  // Handle item removal with localStorage
-  const handleRemoveItem = (itemId) => {
-    removeItem(itemId);
-    // Update localStorage after removing item
-    const updatedItems = items.filter((item) => item.id !== itemId);
-    saveCartToLocalStorage(updatedItems);
+  // MODIFIED: handleRemoveItem now passes selectedOption to useCart
+  const handleRemoveItem = (itemId, selectedOption = undefined) => {
+    removeItem(itemId, selectedOption);
   };
 
   if (!shouldRender) return null;
@@ -117,7 +86,6 @@ export default function Cart({ isOpen, onClose }) {
           }`}
           onClick={onClose}
         />
-
         {/* Cart Panel with enhanced animations - faster */}
         <div
           className={`absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl transform transition-all duration-300 ease-out overflow-x-hidden ${
@@ -154,7 +122,6 @@ export default function Cart({ isOpen, onClose }) {
                 <X className='h-6 w-6' />
               </Button>
             </div>
-
             {/* Cart Items with staggered animations - faster */}
             <div className='flex-1 overflow-y-auto overflow-x-hidden p-4'>
               {items.length === 0 ? (
@@ -188,7 +155,7 @@ export default function Cart({ isOpen, onClose }) {
                 <div className='space-y-4'>
                   {items.map((item, index) => (
                     <Card
-                      key={item.id}
+                      key={`${item.id}-${item.selectedOption || "no-option"}`} // MODIFIED: Key now includes selectedOption
                       className={`shadow-sm hover:shadow-md transition-all duration-300 ease-out transform ${
                         isAnimating
                           ? "translate-x-0 opacity-100 scale-100"
@@ -216,6 +183,12 @@ export default function Cart({ isOpen, onClose }) {
                             >
                               {item.name}
                             </h4>
+                            {/* NEW: Display selected option if available */}
+                            {item.selectedOption && (
+                              <p className='text-xs text-gray-500 mt-0.5'>
+                                Avec: {item.selectedOption}
+                              </p>
+                            )}
                             <p className='text-sm text-gray-500'>
                               {item.price}€
                             </p>
@@ -225,12 +198,16 @@ export default function Cart({ isOpen, onClose }) {
                                 size='sm'
                                 onClick={() => {
                                   if (item.quantity === 1) {
-                                    handleRemoveItem(item.id);
+                                    handleRemoveItem(
+                                      item.id,
+                                      item.selectedOption
+                                    ); // MODIFIED
                                   } else {
                                     handleUpdateQuantity(
                                       item.id,
-                                      item.quantity - 1
-                                    );
+                                      item.quantity - 1,
+                                      item.selectedOption
+                                    ); // MODIFIED
                                   }
                                 }}
                                 className='h-8 w-8 p-0 border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-200 hover:scale-110'
@@ -246,9 +223,10 @@ export default function Cart({ isOpen, onClose }) {
                                 onClick={() =>
                                   handleUpdateQuantity(
                                     item.id,
-                                    item.quantity + 1
+                                    item.quantity + 1,
+                                    item.selectedOption
                                   )
-                                }
+                                } // MODIFIED
                                 className='h-8 w-8 p-0 border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-200 hover:scale-110'
                               >
                                 +
@@ -262,7 +240,9 @@ export default function Cart({ isOpen, onClose }) {
                             <Button
                               variant='ghost'
                               size='sm'
-                              onClick={() => handleRemoveItem(item.id)}
+                              onClick={() =>
+                                handleRemoveItem(item.id, item.selectedOption)
+                              } // MODIFIED
                               className='text-red-600 hover:text-red-700 hover:bg-red-600/10 mt-1 transition-all duration-200'
                             >
                               Supprimer
@@ -275,7 +255,6 @@ export default function Cart({ isOpen, onClose }) {
                 </div>
               )}
             </div>
-
             {/* Footer with Total and Checkout - slide up animation faster */}
             {items.length > 0 && (
               <div
@@ -289,12 +268,13 @@ export default function Cart({ isOpen, onClose }) {
                 <div className='space-y-2'>
                   <div className='flex justify-between font-semibold text-lg border-t pt-2'>
                     <span style={{ fontFamily: "Arial" }}>Sous-total</span>
-                    <span>{getTotalPrice()}€</span>
+                    <span>{getTotalPrice().toFixed(2)}€</span>{" "}
+                    {/* MODIFIED: Ensure toFixed(2) is called */}
                   </div>
                 </div>
                 <Button
                   onClick={handleCheckout}
-                  className='w-full bg-red-600 hover:bg-red-700 text-white py-3 text-lg font-semibold transition-all duration-300 transform  hover:shadow-lg'
+                  className='w-full bg-red-600 hover:bg-red-700 text-white py-3 text-lg font-semibold transition-all duration-300 transform hover:shadow-lg'
                   style={{ fontFamily: "Arial" }}
                 >
                   Commander
@@ -304,7 +284,6 @@ export default function Cart({ isOpen, onClose }) {
           </div>
         </div>
       </div>
-
       {/* Checkout Modal */}
       <DeliveryModal
         isOpen={isDeliveryOpen}

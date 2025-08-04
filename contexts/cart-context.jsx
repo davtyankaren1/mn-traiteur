@@ -52,12 +52,17 @@ export function CartProvider({ children }) {
     }
   }, [items, isLoaded]);
 
+  // MODIFIED: addItem now accepts an optional selectedOption
   const addItem = useCallback((newItem) => {
     setItems((prev) => {
-      const existing = prev.find((i) => i.id === newItem.id);
+      // Check if an item with the same ID AND selected option already exists
+      const existing = prev.find(
+        (i) =>
+          i.id === newItem.id && i.selectedOption === newItem.selectedOption
+      );
       if (existing) {
         return prev.map((i) =>
-          i.id === newItem.id
+          i.id === newItem.id && i.selectedOption === newItem.selectedOption
             ? { ...i, quantity: i.quantity + newItem.quantity }
             : i
         );
@@ -66,27 +71,40 @@ export function CartProvider({ children }) {
     });
   }, []);
 
-  const updateQuantity = useCallback((id, quantity) => {
-    setItems((prev) =>
-      prev.map((i) =>
-        i.id === id ? { ...i, quantity: Math.max(1, quantity) } : i
-      )
-    );
-  }, []);
+  // MODIFIED: updateQuantity now considers selectedOption for unique identification
+  const updateQuantity = useCallback(
+    (id, quantity, selectedOption = undefined) => {
+      setItems((prev) =>
+        prev.map((i) =>
+          i.id === id && i.selectedOption === selectedOption
+            ? { ...i, quantity: Math.max(1, quantity) }
+            : i
+        )
+      );
+    },
+    []
+  );
 
-  const removeItem = useCallback((id) => {
-    setItems((prev) => prev.filter((i) => i.id !== id));
+  // MODIFIED: removeItem now considers selectedOption for unique identification
+  const removeItem = useCallback((id, selectedOption = undefined) => {
+    setItems((prev) =>
+      prev.filter((i) => !(i.id === id && i.selectedOption === selectedOption))
+    );
   }, []);
 
   const clearCart = useCallback(() => {
     setItems([]);
   }, []);
 
+  // MODIFIED: Ensure price calculations are done with cents to avoid floating point errors
   const getTotalPrice = useCallback(() => {
     const totalCents = items.reduce((sum, item) => {
+      // Convert item price to cents, then multiply by quantity
+      // Math.round is used to handle any potential floating point issues when multiplying by 100
       const itemPriceInCents = Math.round(item.price * 100);
       return sum + itemPriceInCents * item.quantity;
     }, 0);
+    // Convert total cents back to euros
     return totalCents / 100;
   }, [items]);
 
@@ -108,7 +126,7 @@ export function CartProvider({ children }) {
 }
 
 export function useCart() {
-  const context = useContext(CartContext);
+  const context = useContext(CartContext); // Changed ctx to context for consistency
   if (!context) {
     throw new Error("useCart must be used within a CartProvider");
   }

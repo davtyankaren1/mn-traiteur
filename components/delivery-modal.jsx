@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   X,
   User,
@@ -36,8 +36,14 @@ export default function DeliveryModal({ isOpen, onClose, onCartClose }) {
   const { items, getTotalPrice, clearCart } = useCart();
 
   // MODIFIED: Conditional delivery fee based on Geispolsheim zone
-  const deliveryFee = isGeispolsheimZone === "yes" ? 0 : 5;
-  const totalWithDelivery = getTotalPrice() + deliveryFee;
+  const deliveryFee = useMemo(
+    () => (isGeispolsheimZone === "yes" ? 0 : 4.99),
+    [isGeispolsheimZone]
+  ); // MODIFIED: Changed to 4.99€
+  const totalWithDelivery = useMemo(
+    () => getTotalPrice() + deliveryFee,
+    [getTotalPrice, deliveryFee]
+  );
 
   useEffect(() => {
     if (isOpen) {
@@ -108,14 +114,26 @@ export default function DeliveryModal({ isOpen, onClose, onCartClose }) {
       name: item.name,
       quantity: item.quantity,
       price: item.price,
-      total: item.price * item.quantity
+      total: item.price * item.quantity,
+      selectedOption: item.selectedOption // NEW: Include selected option
     }));
 
     // Ensure totalWithDelivery is a number and format it with toFixed(2)
     const formattedTotalWithDelivery = Number(totalWithDelivery).toFixed(2);
 
     // MODIFIED: Reordered message - total comes after note and delivery
-    const message = `Nouvelle commande reçue  
+    const message = `
+    Détails de la commande :
+${basketData
+  .map(
+    (item) =>
+      `🔸 ${item.name}${
+        item.selectedOption ? ` (avec ${item.selectedOption})` : ""
+      } x${item.quantity}: ${item.total.toFixed(2)}€`
+  ) // MODIFIED: Include selected option in Telegram message
+  .join("\n")}
+
+ Nouvelle commande reçue 
 👤 Nom: ${customerInfo.name}
 📞 Téléphone: ${customerInfo.phone}
 🏠 Adresse: ${customerInfo.address}
@@ -127,16 +145,9 @@ export default function DeliveryModal({ isOpen, onClose, onCartClose }) {
         : ""
     }
 🚚 Livraison : ${deliveryFee === 0 ? "Gratuite" : `${deliveryFee}€`}
-💰 Total: ${formattedTotalWithDelivery}€
-
-Détails de la commande :
-${basketData
-  .map((item) => `🔸 ${item.name} x${item.quantity}: ${item.total.toFixed(2)}€`)
-  .join("\n")}
-  `;
+💰 Total: ${formattedTotalWithDelivery}€`;
 
     const url = `https://api.telegram.org/bot${process.env.NEXT_PUBLIC_TG_BOT_TOKEN}/sendMessage`;
-
     axios
       .post(url, {
         chat_id: process.env.NEXT_PUBLIC_TG_CHAT_ID,
