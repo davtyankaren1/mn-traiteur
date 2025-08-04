@@ -38,13 +38,7 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 );
 
-const SIDE_DISH_OPTIONS = [
-  "Frites",
-  "pomme de terre sautée",
-  "riz",
-  "pâtes",
-  "salade verte"
-];
+const SIDE_DISH_OPTIONS = ["Frites", "Pomme de terre sautée", "Riz", "Pâtes"];
 const SAUCE_OPTIONS = ["Sauce balsamique", "Sauce césar"];
 
 export default function Menu() {
