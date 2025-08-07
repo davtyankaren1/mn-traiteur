@@ -268,7 +268,7 @@ ${formData.message}
                       className='text-sm font-semibold'
                       style={{ fontFamily: "Arial" }}
                     >
-                      Notre équipe professionnelle M.N. Traiteur
+                       Contactez M.N. Traiteur
                     </p>
                   </div>
                 </div>
