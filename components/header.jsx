@@ -199,8 +199,9 @@ export default function Header({ onCartClick }) {
                 alt='M.N. Traiteur Logo'
                 width={280}
                 height={100}
-                className='h-12 sm:h-14 md:h-16 lg:h-18 w-auto transition-all duration-300'
+                className='h-12 sm:h-14 md:h-16 lg:h-18 w-auto transition-all duration-300 cursor-pointer'
                 priority
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
               />
             </div>
 
