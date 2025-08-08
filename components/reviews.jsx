@@ -19,80 +19,80 @@ export default function Reviews() {
       name: "Emilie Dupont",
       location: "Strasbourg",
       rating: 5,
-      text: "Une expérience fantastique ! Les plats étaient délicieux, surtout le couscous, qui était à tomber. Le service était rapide et très sympathique. Je recommande vivement ce restaurant à tous ceux qui veulent goûter des saveurs authentiques.",
-      dish_type: "Couscous"
+      text: "Une expérience incroyable avec la Grillade au charbon de bois ! La viande était parfaitement cuite, pleine de saveurs. Livraison rapide et un service impeccable. Je recommande vivement à tous les amateurs de bonne cuisine.",
+      dish_type: "Grillade au charbon de bois"
     },
     {
       id: 2,
       name: "Thomas Berger",
       location: "Bischheim",
-      rating: 4,
-      text: "J'ai été agréablement surpris par la qualité de la nourriture. Les assiettes étaient bien garnies et pleines de saveurs. Le personnel était attentif et très courtois. Parfait pour une soirée en famille.",
-      dish_type: "Cuisine Alsacienne"
+      rating: 5,
+      text: "Les Assiettes sont délicieuses, très bien équilibrées et généreuses. Une livraison rapide et un service soigné. Je suis plus que satisfait de ma commande, c'est une adresse que je vais garder dans mes favoris.",
+      dish_type: "Nos Assiettes"
     },
     {
       id: 3,
       name: "Claire Martin",
       location: "Haguenau",
       rating: 5,
-      text: "Le meilleur restaurant que j'ai visité ces derniers temps ! Les plats sont parfaitement équilibrés, les saveurs sont riches, et l'accueil est exceptionnel. Un vrai moment de plaisir à chaque visite.",
-      dish_type: "Cuisine Française"
+      text: "Les Boissons étaient parfaites pour accompagner nos plats. Tout était frais, bien préparé et livré en un rien de temps. C'était une excellente expérience, je reviendrai sans hésiter.",
+      dish_type: "Nos Boissons"
     },
     {
       id: 4,
       name: "Julien Lefevre",
       location: "Schiltigheim",
       rating: 5,
-      text: "Service impeccable et ambiance chaleureuse. Les desserts étaient divins et le plat principal était exquis. Une adresse que je vais certainement recommander à mes amis.",
-      dish_type: "Gastronomie Française"
+      text: "Les Burgers sont absolument délicieux. Chaque bouchée était un régal. Livraison rapide, comme toujours, et présentation impeccable. Je vais certainement recommander à mes amis.",
+      dish_type: "Nos Burgers"
     },
     {
       id: 5,
       name: "Sophie Charbonnier",
       location: "Geispolsheim",
-      rating: 4,
-      text: "Très bon rapport qualité-prix. Les plats étaient savoureux et bien présentés. Un endroit idéal pour une sortie en famille. Je reviendrai sans hésiter.",
-      dish_type: "Pizza"
+      rating: 5,
+      text: "Des Desserts à tomber ! Tout était parfait, de la présentation à la saveur. Très rapide et pratique, la livraison a été faite sans aucun souci. C’est une option parfaite pour finir un repas.",
+      dish_type: "Nos Desserts"
     },
     {
       id: 6,
       name: "David Muller",
       location: "Strasbourg",
       rating: 5,
-      text: "Un repas incroyable, surtout le plat de viande grillée ! Les saveurs étaient parfaites et le service rapide. L'endroit est très agréable, avec une vue magnifique sur la ville.",
-      dish_type: "Grillades"
+      text: "Les Fritures étaient juste parfaites, croustillantes et savoureuses. Je suis ravi de la rapidité de la livraison, et la qualité est toujours au rendez-vous. C'est devenu mon choix préféré pour une soirée tranquille.",
+      dish_type: "Nos Fritures"
     },
     {
       id: 7,
       name: "Isabelle Klein",
       location: "Molsheim",
       rating: 5,
-      text: "Un endroit à découvrir absolument. Les plats étaient délicieux, les portions généreuses, et le personnel très sympathique. Un vrai régal à chaque bouchée.",
-      dish_type: "Cuisine Traditionnelle"
+      text: "Les Pastas étaient incroyablement bonnes, bien assaisonnées et parfaitement cuites. Livraison rapide et service impeccable. Je suis ravie de chaque commande et je recommande à tout le monde de goûter ces plats.",
+      dish_type: "Nos Pastas"
     },
     {
       id: 8,
       name: "Maxime Dupuis",
       location: "Obernai",
-      rating: 4,
-      text: "Très bon restaurant avec une belle ambiance. Le plat principal était un peu trop salé à mon goût, mais le reste était parfait. J'y reviendrai certainement.",
-      dish_type: "Cuisine du Terroir"
+      rating: 5,
+      text: "Les Pizza sont excellentes, la pâte est parfaite et les ingrédients de qualité. Livraison rapide, tout était encore chaud à l'arrivée. Une expérience vraiment agréable, je reviendrai sans hésiter.",
+      dish_type: "Nos Pizza"
     },
     {
       id: 9,
       name: "Nathalie Rousseau",
       location: "Strasbourg",
       rating: 5,
-      text: "Une expérience culinaire inoubliable. Les plats étaient préparés avec soin, et les saveurs étaient équilibrées. Je recommande vivement cet endroit pour tous les gourmets.",
-      dish_type: "Menu Dégustation"
+      text: "Les Salads étaient frais, croquants et pleins de saveurs. C'est un excellent choix pour une option saine et gourmande. Livraison rapide et tout était parfaitement emballé. Je recommande vivement.",
+      dish_type: "Nos Salads"
     },
     {
       id: 10,
       name: "François Lemoine",
       location: "Saverne",
-      rating: 4,
-      text: "Très bon restaurant avec des produits frais. Le service était rapide, mais j'ai trouvé que le menu manquait un peu de variété. Néanmoins, une excellente adresse à découvrir.",
-      dish_type: "Cuisine Française"
+      rating: 5,
+      text: "La qualité est toujours au top, et chaque plat est délicieux. Je suis particulièrement fan des burgers, mais tout le menu est top. Livraison rapide et service au point. Je suis toujours satisfait.",
+      dish_type: "Nos Burgers"
     }
   ];
 
