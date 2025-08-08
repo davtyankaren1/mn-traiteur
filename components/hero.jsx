@@ -133,7 +133,7 @@ export default function Hero() {
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "Restaurant",
+            "@type": "Livraison de plats chauds",
             name: "M.N. Traiteur",
             address: {
               "@type": "PostalAddress",

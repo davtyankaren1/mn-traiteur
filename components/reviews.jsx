@@ -166,7 +166,7 @@ export default function Reviews() {
               "@context": "https://schema.org",
               "@type": "Review",
               itemReviewed: {
-                "@type": "Restaurant",
+                "@type": "Livraison de plats chauds",
                 name: "M.N. Traiteur",
                 address: {
                   "@type": "PostalAddress",
