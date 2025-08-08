@@ -39,9 +39,10 @@ export default function Footer() {
               className='text-gray-300 leading-relaxed'
               style={{ fontFamily: "Arial" }}
             >
-              Cuisine française traditionnelle et moderne préparée avec des
-              ingrédients naturels et beaucoup d'amour. Notre objectif est
-              d'assurer un service de qualité et des plats délicieux.
+              Découvrez nos plats français préparés avec des ingrédients frais
+              et de qualité, livrés directement à votre porte. Notre objectif
+              est d'offrir un service rapide, une expérience culinaire unique et
+              des plats délicieux.
             </p>
             <div className='flex space-x-3'>
               {/* Facebook Icon with blue background */}

@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata = {
   title: "M.N. Traiteur - Livraison de plats chauds",
   description:
-    "Cuisine française traditionnelle et moderne préparée avec des ingrédients naturels et beaucoup d'amour",
+    "Découvrez nos délicieuses spécialités françaises préparées avec des ingrédients frais et de qualité, livrées directement chez vous.",
   viewport:
     "width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes"
 };

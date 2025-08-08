@@ -29,26 +29,24 @@ export default function About() {
     },
     {
       icon: Clock,
-      title: "Recettes Traditionnelles",
+      title: "Nos Catégories",
       description:
-        "Recettes françaises traditionnelles transmises de génération en génération",
-      mobileDescription: "Recettes traditionnelles françaises"
+        "Découvrez nos spécialités : Grillades, Burgers, Pizzas, Salades, et bien plus encore",
+      mobileDescription: "Grillades, Burgers, Pizzas, et plus"
     }
   ];
 
   return (
     <>
       <Head>
-        <title>
-          À propos de M.N. Traiteur - Traiteur français traditionnel
-        </title>
+        <title>À propos de M.N. Traiteur - Livraison de plats chauds</title>
         <meta
           name='description'
           content="Découvrez l'histoire et les valeurs de M.N. Traiteur, un traiteur français spécialisé dans des plats préparés avec amour, des ingrédients de qualité, et une ambiance familiale."
         />
         <meta
           property='og:title'
-          content='À propos de M.N. Traiteur - Traiteur français traditionnel'
+          content='À propos de M.N. Traiteur - Traiteur français'
         />
         <meta
           property='og:description'
@@ -191,16 +189,17 @@ export default function About() {
                   Notre Histoire
                 </h3>
                 <p className='text-gray-600 leading-relaxed'>
-                  M.N. Traiteur a été fondé en 2015 avec l'objectif d'apporter
-                  le vrai goût de la cuisine française traditionnelle à nos
-                  clients. Notre nom symbolise la parfaite combinaison du feu et
-                  de la saveur.
+                  M.N. Traiteur a été fondé en 2015 avec l'objectif d'offrir à
+                  nos clients des plats français de qualité, préparés avec des
+                  ingrédients frais et livrés directement à domicile. Notre nom
+                  symbolise la parfaite combinaison du goût authentique et du
+                  service personnalisé.
                 </p>
                 <p className='text-gray-600 leading-relaxed'>
-                  Au fil des années, nous sommes devenus réputés pour notre
-                  service de qualité, nos ingrédients frais et nos recettes
-                  traditionnelles. Chacun de nos plats est préparé avec amour et
-                  une grande attention aux détails.
+                  Au fil des années, nous sommes devenus connus pour notre
+                  service de livraison rapide, nos plats variés, et notre
+                  engagement envers la qualité. Chaque plat est préparé avec
+                  soin et passion, offrant une expérience culinaire unique.
                 </p>
               </div>
             </div>

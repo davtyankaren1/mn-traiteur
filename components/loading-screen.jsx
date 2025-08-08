@@ -145,7 +145,7 @@ export default function LoadingScreen({ onLoadingComplete }) {
                 className='text-red-600/80 text-sm sm:text-base'
                 style={{ fontFamily: "Arial" }}
               >
-                Cuisine française traditionnelle
+                Livraison de plats chauds
               </p>
             </div>
           </div>
