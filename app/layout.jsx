@@ -31,7 +31,7 @@ export default function RootLayout({ children }) {
           content='M.N. Traiteur - Livraison de plats chauds'
         />
         <meta property='og:description' content={metadata.description} />
-        <meta property='og:image' content='https://mn-traiteur.fr/logo.png' />
+        <meta property='og:image' content='/images/logo.png' />
         <meta property='og:url' content='https://mn-traiteur.netlify.app' />
         <meta property='og:type' content='website' />
 
