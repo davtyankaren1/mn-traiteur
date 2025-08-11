@@ -5,7 +5,7 @@ Disallow: /login/
 Disallow: /user-profile/
 
 # Sitemap location
-Sitemap: https://mn-traiteur.netlify.app/sitemap.xml
+Sitemap: https://mn-traiteur.fr/sitemap.xml
 
 # Prevent some unwanted bots
 User-agent: Googlebot-Image

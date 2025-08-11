@@ -5,15 +5,15 @@ import { Star, Quote } from "lucide-react";
 import Image from "next/image";
 import Head from "next/head";
 
-export default function Reviews() {
+export default function Reviews({ initialReviews = null }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [direction, setDirection] = useState("right");
   const sliderRef = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
 
-  // Static reviews data - TODO: Replace with Redux store data
-  const reviews = [
+  // Use initialReviews if provided, otherwise use static data
+  const reviews = initialReviews || [
     {
       id: 1,
       name: "Emilie Dupont",

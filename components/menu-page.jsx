@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import Image from "next/image";
+import { useRouter, usePathname } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -16,7 +18,8 @@ import {
   Plus,
   Minus,
   Loader2,
-  AlertCircle
+  AlertCircle,
+  Filter
 } from "lucide-react";
 import {
   Dialog,
@@ -27,85 +30,60 @@ import {
   DialogTrigger
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-import { useSelector, useDispatch } from "react-redux";
-import { selectCartItems, addItem, updateQuantity, removeItem } from "@/redux/slices/cartSlice";
 import { toast } from "sonner";
-import { createClient } from "@supabase/supabase-js";
-import Head from "next/head";
+import Header from "@/components/header";
+import Footer from "@/components/footer";
+import CartRedux from "@/components/cart-redux";
 import SelectionModal from "@/components/selection-modal";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-);
+import { 
+  selectCartItems, 
+  selectCartIsLoaded, 
+  addItem, 
+  updateQuantity, 
+  removeItem 
+} from "@/redux/slices/cartSlice";
 
 const SIDE_DISH_OPTIONS = ["Frites", "Pomme de terre sautée", "Riz", "Pâtes"];
 const SAUCE_OPTIONS = ["Sauce balsamique", "Sauce césar"];
 
-export default function Menu() {
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [activeCategory, setActiveCategory] = useState("Tout");
-  const [itemsToShow, setItemsToShow] = useState(12);
-  const ITEMS_PER_PAGE = 12;
-  
-  // Use Redux instead of cart context
+export default function MenuPage({ 
+  initialProducts, 
+  initialCategories, 
+  initialCategoryMap,
+  selectedCategory = 'all'
+}) {
+  const router = useRouter();
+  const pathname = usePathname();
   const dispatch = useDispatch();
   const items = useSelector(selectCartItems);
-  const isLoaded = true; // With Redux, we can assume it's always loaded
+  const isLoaded = useSelector(selectCartIsLoaded);
+  
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [activeCategory, setActiveCategory] = useState(selectedCategory === 'all' ? "Tout" : selectedCategory);
+  const [itemsToShow, setItemsToShow] = useState(12);
+  const ITEMS_PER_PAGE = 12;
 
-  const [menuItems, setMenuItems] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [categoriesMap, setCategoriesMap] = useState({});
-  const [loading, setLoading] = useState(true);
+  const [menuItems, setMenuItems] = useState(initialProducts || []);
+  const [categories, setCategories] = useState(initialCategories || ["Tout"]);
+  const [categoriesMap, setCategoriesMap] = useState(initialCategoryMap || {});
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const [isSelectionModalOpen, setIsSelectionModalOpen] = useState(false);
-  const [productAwaitingSelection, setProductAwaitingSelection] =
-    useState(null);
+  const [productAwaitingSelection, setProductAwaitingSelection] = useState(null);
   const [selectionModalType, setSelectionModalType] = useState("");
 
+  // Update URL when category changes
   useEffect(() => {
-    async function fetchMenuData() {
-      try {
-        setLoading(true);
-        const [productsResponse, categoriesResponse] = await Promise.all([
-          supabase.from("products").select("*").order("name"),
-          supabase.from("categories").select("*").order("name")
-        ]);
-
-        if (categoriesResponse.error) {
-          console.error("Categories error:", categoriesResponse.error);
-          setError(`Categories: ${categoriesResponse.error.message}`);
-          return;
-        }
-        if (productsResponse.error) {
-          console.error("Products error:", productsResponse.error);
-          setError(`Products: ${productsResponse.error.message}`);
-          return;
-        }
-
-        const catMap = {};
-        const categoryNames = ["Tout"];
-        if (categoriesResponse.data) {
-          categoriesResponse.data.forEach((cat) => {
-            catMap[cat.id] = cat.name;
-            categoryNames.push(cat.name);
-          });
-        }
-
-        setMenuItems(productsResponse.data || []);
-        setCategories(categoryNames);
-        setCategoriesMap(catMap);
-      } catch (err) {
-        console.error("Error in fetchMenuData:", err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
+    if (activeCategory === "Tout") {
+      router.push('/menu', { scroll: false });
+    } else {
+      const slug = activeCategory.toLowerCase().replace(/\s+/g, '-');
+      router.push(`/menu/${slug}`, { scroll: false });
     }
-    fetchMenuData();
-  }, []);
+  }, [activeCategory, router]);
 
   const getCategoryName = (categoryId) => {
     return categoriesMap[categoryId] || "Catégorie inconnue";
@@ -134,28 +112,18 @@ export default function Menu() {
     }).length;
   }, [menuItems, activeCategory, categoriesMap]);
 
-  // MODIFIED: getItemQuantityInCart now sums quantities of all instances of a product
+  // Get item quantity in cart
   const getItemQuantityInCart = (itemId) => {
     return items
       .filter((item) => item.id === itemId)
       .reduce((sum, item) => sum + item.quantity, 0);
   };
 
-  // MODIFIED: handleUpdateCartItemQuantity now triggers selection modal for specific categories
+  // Handle cart item quantity updates
   const handleUpdateCartItemQuantity = (product, change) => {
     const categoryName = getCategoryName(product.category_id);
-    // --- DEBUGGING LOGS START ---
-    console.log(
-      `[DEBUG] Product clicked: ${product.name}, Category Name: "${categoryName}"`
-    );
-    // --- DEBUGGING LOGS END ---
-
     const requiresSelection =
       categoryName === "Nos Assiettes" || categoryName === "Nos Salads";
-
-    // --- DEBUGGING LOGS START ---
-    console.log(`[DEBUG] Requires selection: ${requiresSelection}`);
-    // --- DEBUGGING LOGS END ---
 
     if (change === 1) {
       // User wants to add/increment
@@ -165,11 +133,6 @@ export default function Menu() {
         const type = categoryName === "Nos Assiettes" ? "sideDish" : "sauce";
         setSelectionModalType(type);
         setIsSelectionModalOpen(true);
-        // --- DEBUGGING LOGS START ---
-        console.log(
-          `[DEBUG] Setting modal type to: "${type}" and opening modal.`
-        );
-        // --- DEBUGGING LOGS END ---
         return; // Stop here, actual add happens after selection
       } else {
         // For other categories, just add/increment directly
@@ -248,94 +211,20 @@ export default function Menu() {
   // Don't render until cart is loaded to prevent hydration issues
   if (!isLoaded) {
     return (
-      <section id='menu' className='w-full py-12 md:py-24 lg:py-32 bg-gray-50'>
-        <div className='container px-4 md:px-6 max-w-7xl mx-auto'>
-          <div className='flex flex-col items-center justify-center py-12'>
-            <Loader2 className='h-12 w-12 text-red-600 animate-spin mb-4' />
-            <p
-              className='text-lg text-gray-600'
-              style={{ fontFamily: "Arial" }}
-            >
-              Chargement...
-            </p>
-          </div>
-        </div>
-      </section>
+      <div className='flex flex-col items-center justify-center min-h-screen py-12'>
+        <Loader2 className='h-12 w-12 text-red-600 animate-spin mb-4' />
+        <p className='text-lg text-gray-600' style={{ fontFamily: "Arial" }}>
+          Chargement...
+        </p>
+      </div>
     );
   }
 
   return (
     <>
-      <Head>
-        <title>Notre Menu - Découvrez les Plats Authentiques</title>
-        <meta
-          name='description'
-          content='Explorez notre carte de plats faits maison avec des ingrédients frais et locaux. Découvrez des options végétariennes, sans gluten et plus encore.'
-        />
-        <meta name='robots' content='index, follow' />
-        <meta
-          property='og:title'
-          content='Notre Menu - Découvrez les Plats Authentiques'
-        />
-        <meta
-          property='og:description'
-          content='Explorez notre carte de plats faits maison avec des ingrédients frais et locaux. Découvrez des options végétariennes, sans gluten et plus encore.'
-        />
-        <meta property='og:url' content='https://www.yoursite.com/menu' />
-        <meta property='og:type' content='website' />
-        <meta
-          property='og:image'
-          content='https://www.yoursite.com/path-to-image.jpg'
-        />
-        <meta property='og:locale' content='fr_FR' />
-        {/* Twitter Card Meta Tags */}
-        <meta name='twitter:card' content='summary_large_image' />
-        <meta
-          name='twitter:title'
-          content='Notre Menu - Découvrez les Plats Authentiques'
-        />
-        <meta
-          name='twitter:description'
-          content='Explorez notre carte de plats faits maison avec des ingrédients frais et locaux. Découvrez des options végétariennes, sans gluten et plus encore.'
-        />
-        <meta
-          name='twitter:image'
-          content='https://www.yoursite.com/path-to-image.jpg'
-        />
-        {/* Structured Data (JSON-LD) for Rich Snippets */}
-        <script
-          type='application/ld+json'
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Restaurant",
-              name: "M.N. Traiteur",
-              url: "https://www.yoursite.com/menu",
-              logo: "https://www.yoursite.com/logo.png",
-              image: "https://www.yoursite.com/path-to-image.jpg",
-              description:
-                "Découvrez notre menu avec des plats faits maison et locaux.",
-              address: {
-                "@type": "PostalAddress",
-                streetAddress: "19 rue Forlen",
-                addressLocality: "Geispolsheim",
-                postalCode: "67118",
-                addressCountry: "FR"
-              },
-              contactPoint: {
-                "@type": "ContactPoint",
-                telephone: "+33 6 12 53 43 76",
-                contactType: "Customer Service"
-              },
-              sameAs: [
-                "https://www.facebook.com/yourrestaurant",
-                "https://www.instagram.com/yourrestaurant"
-              ]
-            })
-          }}
-        ></script>
-      </Head>
-      <section id='menu' className='w-full py-12 md:py-24 lg:py-32 bg-gray-50'>
+      <Header onCartClick={() => setIsCartOpen(true)} />
+      
+      <section className='w-full py-12 md:py-24 lg:py-32 bg-gray-50'>
         <style jsx>{`
           @keyframes fade-in-up {
             from {
@@ -363,17 +252,18 @@ export default function Menu() {
                 <span className='h-1 w-10 bg-red-600 rounded-full'></span>
               </div>
             </div>
-            <h2
+            <h1
               className='text-3xl lg:text-4xl font-bold text-gray-900 mb-4'
               style={{ fontFamily: "Arial" }}
             >
               Notre <span className='text-[#DC2626]'>Menu</span>
-            </h2>
+            </h1>
             <p className='text-lg text-gray-600 max-w-2xl mx-auto'>
               Découvrez notre carte complète avec des plats authentiques
               préparés avec passion
             </p>
           </div>
+          
           {loading && (
             <div className='flex flex-col items-center justify-center py-12'>
               <Loader2 className='h-12 w-12 text-red-600 animate-spin mb-4' />
@@ -381,10 +271,11 @@ export default function Menu() {
                 className='text-lg text-gray-600'
                 style={{ fontFamily: "Arial" }}
               >
-                Chargement du menu depuis la base de données...
+                Chargement du menu...
               </p>
             </div>
           )}
+          
           {error && (
             <div className='flex flex-col items-center justify-center py-12 text-center'>
               <div className='bg-red-100 text-red-700 p-6 rounded-lg max-w-md border border-red-200'>
@@ -406,6 +297,7 @@ export default function Menu() {
               </div>
             </div>
           )}
+          
           {!loading && !error && (
             <>
               <div className='flex flex-wrap justify-center gap-1 sm:gap-2 mb-8 sm:mb-12'>
@@ -429,6 +321,7 @@ export default function Menu() {
                   </Button>
                 ))}
               </div>
+              
               {filteredItems.length === 0 && (
                 <div className='text-center py-12'>
                   <p
@@ -439,9 +332,10 @@ export default function Menu() {
                   </p>
                 </div>
               )}
+              
               <div className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6'>
                 {filteredItems.map((product, index) => {
-                  const quantity = getItemQuantityInCart(product.id); // This quantity is for items without specific options
+                  const quantity = getItemQuantityInCart(product.id);
                   const categoryName = getCategoryName(product.category_id);
                   const requiresSelection =
                     categoryName === "Nos Assiettes" ||
@@ -491,13 +385,12 @@ export default function Menu() {
                         </CardDescription>
                       </CardContent>
                       <CardFooter className='flex flex-col gap-1 sm:gap-2 p-2 sm:p-4 pt-1'>
-                        {/* MODIFIED: Conditional rendering for "Ajouter au panier" vs. +/- controls */}
                         {quantity === 0 ? (
                           <Button
                             className='w-full bg-red-600 hover:bg-red-700 text-white h-8 sm:h-10 text-xs sm:text-sm'
                             onClick={() =>
                               handleUpdateCartItemQuantity(product, 1)
-                            } // This will open the selection modal if requiresSelection is true
+                            }
                             disabled={!product.price}
                             style={{ fontFamily: "Arial" }}
                           >
@@ -515,7 +408,7 @@ export default function Menu() {
                               size='icon'
                               onClick={() =>
                                 handleUpdateCartItemQuantity(product, -1)
-                              } // Decrement an existing instance
+                              }
                               className='h-8 w-8 sm:h-10 sm:w-10'
                             >
                               <Minus className='h-3 w-3 sm:h-4 sm:w-4' />
@@ -528,7 +421,7 @@ export default function Menu() {
                               size='icon'
                               onClick={() =>
                                 handleUpdateCartItemQuantity(product, 1)
-                              } // Re-open selection modal if requiresSelection is true, otherwise increment
+                              }
                               className='h-8 w-8 sm:h-10 sm:w-10'
                             >
                               <Plus className='h-3 w-3 sm:h-4 sm:w-4' />
@@ -594,7 +487,6 @@ export default function Menu() {
                                     <p className='text-sm sm:text-base text-muted-foreground'>
                                       {selectedProduct.description}
                                     </p>
-                                    {/* Check if description and composition are different */}
                                     {selectedProduct.composition &&
                                       selectedProduct.composition !==
                                         selectedProduct.description && (
@@ -608,16 +500,15 @@ export default function Menu() {
                                         </div>
                                       )}
                                   </div>
-                                  {/* MODIFIED: Quick view add to cart button also triggers selection modal */}
                                   {requiresSelection ? (
                                     <Button
                                       className='w-full mt-4 sm:mt-6 bg-red-600 hover:bg-red-700 text-white'
                                       onClick={() => {
-                                        setIsModalOpen(false); // Close quick view modal
+                                        setIsModalOpen(false);
                                         handleUpdateCartItemQuantity(
                                           selectedProduct,
                                           1
-                                        ); // This will open the selection modal
+                                        );
                                       }}
                                       disabled={!selectedProduct.price}
                                       style={{ fontFamily: "Arial" }}
@@ -687,6 +578,7 @@ export default function Menu() {
                   );
                 })}
               </div>
+              
               {itemsToShow < totalItemsInCategory && (
                 <div className='flex justify-center mt-8'>
                   <Button
@@ -705,7 +597,12 @@ export default function Menu() {
         </div>
       </section>
 
-      {/* NEW: Selection Modal */}
+      <Footer />
+      
+      {/* Cart */}
+      <CartRedux isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+      
+      {/* Selection Modal */}
       <SelectionModal
         isOpen={isSelectionModalOpen}
         onClose={() => setIsSelectionModalOpen(false)}

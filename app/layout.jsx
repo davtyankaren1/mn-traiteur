@@ -1,6 +1,7 @@
 import { Inter } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
+import ReduxProvider from "../redux/ReduxProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -9,7 +10,20 @@ export const metadata = {
   description:
     "Découvrez nos délicieuses spécialités françaises préparées avec des ingrédients frais et de qualité, livrées directement chez vous.",
   viewport:
-    "width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes"
+    "width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  alternates: {
+    canonical: 'https://mn-traiteur.fr',
+  },
 };
 
 export default function RootLayout({ children }) {
@@ -32,7 +46,7 @@ export default function RootLayout({ children }) {
         />
         <meta property='og:description' content={metadata.description} />
         <meta property='og:image' content='/images/logo.png' />
-        <meta property='og:url' content='https://mn-traiteur.netlify.app' />
+        <meta property='og:url' content='https://mn-traiteur.fr' />
         <meta property='og:type' content='website' />
 
         {/* Twitter Card Meta Tags */}
@@ -43,7 +57,7 @@ export default function RootLayout({ children }) {
         />
         <meta name='twitter:description' content={metadata.description} />
         <meta name='twitter:image' content='/path_to_your_image.jpg' />
-        <meta name='twitter:url' content='https://mn-traiteur.netlify.app' />
+        <meta name='twitter:url' content='https://mn-traiteur.fr' />
 
         {/* Icons */}
         <link rel='icon' href='/favicon.ico' sizes='any' />
@@ -66,8 +80,10 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body className={`${inter.className} overflow-x-hidden`}>
-        <div className='overflow-x-hidden w-full'>{children}</div>
-        <Toaster position='top-right' />
+        <ReduxProvider>
+          <div className='overflow-x-hidden w-full'>{children}</div>
+          <Toaster position='top-right' />
+        </ReduxProvider>
       </body>
     </html>
   );

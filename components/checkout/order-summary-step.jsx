@@ -1,14 +1,17 @@
 "use client";
 
 import { Button } from "../components/ui/button";
-import { useCart } from "../contexts/cart-context";
+import { useSelector } from "react-redux";
+import { selectCartItems, selectTotalPrice } from "@/redux/slices/cartSlice";
 import { ShoppingBag, ArrowRight } from "lucide-react";
 
 export default function OrderSummaryStep({ onNext, onClose }) {
-  const { items, getTotalPrice } = useCart();
+  // Use Redux instead of cart context
+  const items = useSelector(selectCartItems);
+  const totalPrice = useSelector(selectTotalPrice);
   const deliveryFee = 500;
   const totalWithDelivery =
-    getTotalPrice() + (items.length > 0 ? deliveryFee : 0);
+    totalPrice + (items.length > 0 ? deliveryFee : 0);
 
   return (
     <div className='p-6 space-y-6'>
@@ -73,7 +76,7 @@ export default function OrderSummaryStep({ onNext, onClose }) {
         <div className='bg-red-50 rounded-lg p-4 space-y-2'>
           <div className='flex justify-between text-sm'>
             <span style={{ fontFamily: "Arial" }}>Sous-total</span>
-            <span>{getTotalPrice()}֏</span>
+            <span>{totalPrice}֏</span>
           </div>
           <div className='flex justify-between text-sm'>
             <span style={{ fontFamily: "Arial" }}>Livraison</span>
