@@ -3,17 +3,22 @@ import { useState, useEffect } from "react";
 import { X, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useCart } from "@/contexts/cart-context";
+import { useSelector, useDispatch } from "react-redux";
+import { selectCartItems, updateQuantity, removeItem, selectTotalPrice } from "@/redux/slices/cartSlice";
 import DeliveryModal from "@/components/delivery-modal";
 
 export default function Cart({ isOpen, onClose }) {
-  const { items, updateQuantity, removeItem, getTotalPrice } = useCart();
+  // Use Redux instead of cart context
+  const dispatch = useDispatch();
+  const items = useSelector(selectCartItems);
+  const totalPrice = useSelector(selectTotalPrice);
+  
   const [isDeliveryOpen, setIsDeliveryOpen] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [shouldRender, setShouldRender] = useState(false);
   const deliveryFee = 5; // Fixed delivery fee - changed from 500 to 5
   const totalWithDelivery =
-    getTotalPrice() + (items.length > 0 ? deliveryFee : 0);
+    totalPrice + (items.length > 0 ? deliveryFee : 0);
 
   useEffect(() => {
     if (isOpen) {
@@ -56,7 +61,7 @@ export default function Cart({ isOpen, onClose }) {
     setIsDeliveryOpen(true);
   };
 
-  // MODIFIED: handleUpdateQuantity now passes selectedOption to useCart
+  // MODIFIED: handleUpdateQuantity now uses Redux dispatch
   const handleUpdateQuantity = (
     itemId,
     newQuantity,
@@ -65,13 +70,20 @@ export default function Cart({ isOpen, onClose }) {
     if (newQuantity <= 0) {
       handleRemoveItem(itemId, selectedOption);
     } else {
-      updateQuantity(itemId, newQuantity, selectedOption);
+      dispatch(updateQuantity({
+        id: itemId, 
+        quantity: newQuantity, 
+        selectedOption
+      }));
     }
   };
 
-  // MODIFIED: handleRemoveItem now passes selectedOption to useCart
+  // MODIFIED: handleRemoveItem now uses Redux dispatch
   const handleRemoveItem = (itemId, selectedOption = undefined) => {
-    removeItem(itemId, selectedOption);
+    dispatch(removeItem({
+      id: itemId, 
+      selectedOption
+    }));
   };
 
   if (!shouldRender) return null;

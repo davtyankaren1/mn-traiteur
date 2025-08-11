@@ -1,9 +1,29 @@
-# *
+# Allow all crawlers
 User-agent: *
 Allow: /
 
+# Disallow admin and private areas
+User-agent: *
+Disallow: /admin/
+Disallow: /api/
+Disallow: /_next/
+
+# Specific rules for major bots
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+# Crawl delay for all bots
+User-agent: *
+Crawl-delay: 10
+
 # Host
-Host: https://mn-traiteur.netlify.app
+Host: https://www.mn-traiteur.com
 
 # Sitemaps
-Sitemap: https://mn-traiteur.netlify.app/sitemap.xml
+Sitemap: https://www.mn-traiteur.com/sitemap.xml

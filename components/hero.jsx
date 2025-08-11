@@ -5,10 +5,18 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useHeroSlides } from "@/hooks/useHeroSlides";
 
-export default function Hero() {
-  const { slides: heroSlides, isLoading, error } = useHeroSlides();
+export default function Hero({ initialSlides = [] }) {
+  const { slides: fetchedSlides, isLoading, error } = useHeroSlides();
+  const [heroSlides, setHeroSlides] = useState(initialSlides);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  
+  // Use initialSlides immediately, then update with fetched slides when available
+  useEffect(() => {
+    if (fetchedSlides && fetchedSlides.length > 0) {
+      setHeroSlides(fetchedSlides);
+    }
+  }, [fetchedSlides]);
 
   useEffect(() => {
     if (heroSlides.length > 0 && currentSlide >= heroSlides.length) {
@@ -117,7 +125,7 @@ export default function Hero() {
         content='Des services de restauration et de livraison de repas délicieux à Geispolsheim.'
       />
       <meta property='og:image' content='/default-hero-image.jpg' />
-      <meta property='og:url' content='https://mn-traiteur.netlify.app/' />
+      <meta property='og:url' content='https://mn-traiteur.fr/' />
       <meta
         name='twitter:title'
         content='M.N. Traiteur - Livraison de repas à Geispolsheim'
@@ -143,9 +151,9 @@ export default function Hero() {
               addressCountry: "FR"
             },
             telephone: "+33 123 456 789",
-            url: "https://mn-traiteur.netlify.app",
-            logo: "https://mn-traiteur.netlify.app/logo.png",
-            image: "https://mn-traiteur.netlify.app/default-hero-image.jpg",
+            url: "https://mn-traiteur.fr",
+            logo: "https://mn-traiteur.fr/logo.png",
+            image: "https://mn-traiteur.fr/default-hero-image.jpg",
             description:
               "Delicious catering and food delivery services in Geispolsheim.",
             sameAs: [

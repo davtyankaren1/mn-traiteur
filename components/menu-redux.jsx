@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import Image from "next/image";
 import {
   Card,
@@ -27,12 +28,17 @@ import {
   DialogTrigger
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-import { useSelector, useDispatch } from "react-redux";
-import { selectCartItems, addItem, updateQuantity, removeItem } from "@/redux/slices/cartSlice";
 import { toast } from "sonner";
 import { createClient } from "@supabase/supabase-js";
 import Head from "next/head";
 import SelectionModal from "@/components/selection-modal";
+import { 
+  selectCartItems, 
+  selectCartIsLoaded, 
+  addItem, 
+  updateQuantity, 
+  removeItem 
+} from "@/redux/slices/cartSlice";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -42,22 +48,22 @@ const supabase = createClient(
 const SIDE_DISH_OPTIONS = ["Frites", "Pomme de terre sautée", "Riz", "Pâtes"];
 const SAUCE_OPTIONS = ["Sauce balsamique", "Sauce césar"];
 
-export default function Menu() {
+export default function Menu({ initialMenuData = null }) {
+  const dispatch = useDispatch();
+  const items = useSelector(selectCartItems);
+  const isLoaded = useSelector(selectCartIsLoaded);
+  
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState("Tout");
   const [itemsToShow, setItemsToShow] = useState(12);
   const ITEMS_PER_PAGE = 12;
-  
-  // Use Redux instead of cart context
-  const dispatch = useDispatch();
-  const items = useSelector(selectCartItems);
-  const isLoaded = true; // With Redux, we can assume it's always loaded
 
-  const [menuItems, setMenuItems] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [categoriesMap, setCategoriesMap] = useState({});
-  const [loading, setLoading] = useState(true);
+  // Initialize with server-side data if available
+  const [menuItems, setMenuItems] = useState(initialMenuData?.products || []);
+  const [categories, setCategories] = useState(initialMenuData?.categories || []);
+  const [categoriesMap, setCategoriesMap] = useState(initialMenuData?.categoriesMap || {});
+  const [loading, setLoading] = useState(!initialMenuData);
   const [error, setError] = useState(null);
 
   const [isSelectionModalOpen, setIsSelectionModalOpen] = useState(false);

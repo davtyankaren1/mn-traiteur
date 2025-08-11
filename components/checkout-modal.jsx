@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Card, CardContent } from "../components/ui/card";
-import { useCart } from "../contexts/cart-context";
+import { useDispatch } from "react-redux";
+import { clearCart } from "@/redux/slices/cartSlice";
 import OrderSummaryStep from "../components/checkout/order-summary-step";
 import CustomerInfoStep from "../components/checkout/customer-info-step";
 import PaymentMethodStep from "../components/checkout/payment-method-step";
@@ -23,7 +24,7 @@ export default function CheckoutModal({ isOpen, onClose }) {
       notes: ""
     };
   const [paymentMethod, setPaymentMethod] = useState("cash");
-  const { clearCart } = useCart();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (isOpen) {
@@ -97,7 +98,7 @@ export default function CheckoutModal({ isOpen, onClose }) {
 
   const handleFinalSubmit = () => {
     // Handle final order submission
-    clearCart();
+    dispatch(clearCart());
     onClose();
   };
 

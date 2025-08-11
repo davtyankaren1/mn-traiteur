@@ -10,7 +10,8 @@ import {
   MessageCircle
 } from "lucide-react";
 import { Button } from "../components/ui/button";
-import { useCart } from "../contexts/cart-context";
+import { useSelector } from "react-redux";
+import { selectCartItemCount } from "@/redux/slices/cartSlice";
 import Image from "next/image";
 import Head from "next/head";
 
@@ -19,9 +20,9 @@ export default function Header({ onCartClick }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
   const [isAnimating, setIsAnimating] = useState(false);
-  const { items } = useCart();
-
-  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+  
+  // Use Redux selector to get cart item count
+  const totalItems = useSelector(selectCartItemCount);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -106,11 +107,11 @@ export default function Header({ onCartClick }) {
                 addressCountry: "FR"
               },
               telephone: "+33 6 12 53 43 76",
-              url: "https://mn-traiteur.netlify.app",
+              url: "https://mn-traiteur.fr",
               logo: "/logo.png",
               cuisine: "French",
               // Update this to a full URL if the menu has a dedicated page
-              menu: "https://mn-traiteur.netlify.app/#menu",
+              menu: "https://mn-traiteur.fr/#menu",
               priceRange: "$$"
             })
           }}

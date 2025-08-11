@@ -16,7 +16,8 @@ import { Button } from "../components/ui/button";
 import { Card, CardContent } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
-import { useCart } from "../contexts/cart-context";
+import { useSelector, useDispatch } from "react-redux";
+import { selectCartItems, selectCartTotalPrice, clearCart } from "@/redux/slices/cartSlice";
 import { toast } from "sonner";
 import axios from "axios";
 
@@ -33,7 +34,11 @@ export default function DeliveryModal({ isOpen, onClose, onCartClose }) {
   const [paymentMethod, setPaymentMethod] = useState("");
   const [errors, setErrors] = useState({});
   const [isGeispolsheimZone, setIsGeispolsheimZone] = useState("");
-  const { items, getTotalPrice, clearCart } = useCart();
+  
+  // Use Redux instead of cart context
+  const dispatch = useDispatch();
+  const items = useSelector(selectCartItems);
+  const cartTotalPrice = useSelector(selectCartTotalPrice);
 
   // MODIFIED: Conditional delivery fee based on Geispolsheim zone
   const deliveryFee = useMemo(
@@ -41,8 +46,8 @@ export default function DeliveryModal({ isOpen, onClose, onCartClose }) {
     [isGeispolsheimZone]
   ); // MODIFIED: Changed to 4.99€
   const totalWithDelivery = useMemo(
-    () => getTotalPrice() + deliveryFee,
-    [getTotalPrice, deliveryFee]
+    () => cartTotalPrice + deliveryFee,
+    [cartTotalPrice, deliveryFee]
   );
 
   useEffect(() => {
@@ -163,13 +168,8 @@ ${basketData
   };
 
   const handleFinalConfirm = () => {
-    clearCart();
-    try {
-      localStorage.removeItem("restaurant-cart");
-      console.log("Cart cleared from localStorage");
-    } catch (error) {
-      console.error("Error clearing localStorage:", error);
-    }
+    dispatch(clearCart());
+    // No need to manually remove from localStorage as the Redux action handles it
     toast.success(
       "Votre commande a été confirmée ! Nous vous contacterons bientôt."
     );
@@ -179,13 +179,8 @@ ${basketData
 
   // ADDED: New function to handle X button click on step 3 (same as handleFinalConfirm)
   const handleStep3Close = () => {
-    clearCart();
-    try {
-      localStorage.removeItem("restaurant-cart");
-      console.log("Cart cleared from localStorage");
-    } catch (error) {
-      console.error("Error clearing localStorage:", error);
-    }
+    dispatch(clearCart());
+    // No need to manually remove from localStorage as the Redux action handles it
     toast.success(
       "Votre commande a été confirmée ! Nous vous contacterons bientôt."
     );

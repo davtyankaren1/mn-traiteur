@@ -93,7 +93,7 @@ ${formData.message}
           content='Vous avez des questions ou des suggestions ? Contactez M.N. Traiteur pour toute information ou demande.'
         />
         <meta property='og:image' content='/logo-bg.jpg' />
-        <meta property='og:url' content='https://mn-traiteur.fr/contact' />
+        <meta property='og:url' content='https://mn-traiteur.frcontact' />
         <meta property='og:type' content='website' />
 
         {/* Structured Data for Contact Information */}

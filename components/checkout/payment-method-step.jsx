@@ -5,29 +5,38 @@ import { Button } from "../components/ui/button"
 import { RadioGroup, RadioGroupItem } from "../components/ui/radio-group"
 import { Label } from "../components/ui/label"
 import { CreditCard, Banknote, ArrowLeft, CheckCircle, User, Phone, MapPin } from "lucide-react"
-import { useCart } from "../contexts/cart-context"
+import { useSelector } from "react-redux"
+import { selectCartItems, selectTotalPrice } from "@/redux/slices/cartSlice"
 import { toast } from "sonner"
-import type { CustomerInfo } from "../components/checkout-modal"
 
-interface PaymentMethodStepProps {
-  customerInfo: CustomerInfo
-  paymentMethod: string
-  onPaymentMethodChange: (method: string) => void
-  onPrev: () => void
-  onSubmit: () => void
-}
+// Define CustomerInfo type directly here instead of importing
+const CustomerInfoType = {}; // Just for JSX compatibility
 
+// Define props without TypeScript interface syntax
+// Using JSDoc for type documentation instead
+
+/**
+ * Payment Method Step Component
+ * @param {Object} props - Component props
+ * @param {Object} props.customerInfo - Customer information object
+ * @param {string} props.paymentMethod - Selected payment method
+ * @param {Function} props.onPaymentMethodChange - Payment method change handler
+ * @param {Function} props.onPrev - Previous step handler
+ * @param {Function} props.onSubmit - Submit handler
+ */
 export default function PaymentMethodStep({
   customerInfo,
   paymentMethod,
   onPaymentMethodChange,
   onPrev,
   onSubmit,
-}: PaymentMethodStepProps) {
+}) {
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const { items, getTotalPrice } = useCart()
+  // Use Redux instead of cart context
+  const items = useSelector(selectCartItems)
+  const totalPrice = useSelector(selectTotalPrice)
   const deliveryFee = 500
-  const totalWithDelivery = getTotalPrice() + (items.length > 0 ? deliveryFee : 0)
+  const totalWithDelivery = totalPrice + (items.length > 0 ? deliveryFee : 0)
 
   const handleSubmit = async () => {
     setIsSubmitting(true)
@@ -77,7 +86,7 @@ export default function PaymentMethodStep({
         <div className="space-y-2 text-sm">
           <div className="flex justify-between">
             <span>Plats ({items.length} types)</span>
-            <span>{getTotalPrice()}֏</span>
+            <span>{totalPrice}֏</span>
           </div>
           <div className="flex justify-between">
             <span>Livraison</span>
